@@ -3,3 +3,81 @@ mongodb+srv://Actify:Actify@actify.bvltxfb.mongodb.net/
 
 username: Actify
 Password: Actify
+
+
+
+
+
+Actify/server/
+│── src/
+│   ├── config/db.js
+│   ├── controllers/
+│   │   ├── fdpAttendedController.js
+│   │   ├── fdpConductedController.js
+│   │   ├── expertTalkController.js
+│   ├── models/
+│   │   ├── FDPAttended.js
+│   │   ├── FDPConducted.js
+│   │   ├── ExpertTalk.js
+│   ├── routes/
+│   │   ├── fdpAttendedRoutes.js
+│   │   ├── fdpConductedRoutes.js
+│   │   ├── expertTalkRoutes.js
+│   ├── middleware/
+│   ├── utils/
+│   ├── app.js
+│   ├── server.js
+│── package.json
+│── .env
+
+
+
+
+
+
+src/
+├── components/
+│   ├── FormNavigation.jsx
+│   ├── TemplatePreview.jsx
+│   └── DownloadOptions.jsx
+├── pages/
+│   ├── Dashboard/
+│   │   ├── Dashboard.jsx
+│   │   └── Dashboard.css
+│   ├── FDPAttended/
+│   │   ├── Summary.jsx
+│   │   ├── TOC.jsx
+│   │   ├── UploadBrochure.jsx
+│   │   ├── ResourcePerson.jsx
+│   │   ├── GeoTagPhotos.jsx
+│   │   ├── Attendance.jsx
+│   │   ├── Feedback.jsx
+│   │   └── FDPAttendedForm.jsx
+│   ├── FDPConducted/
+│   │   ├── Summary.jsx
+│   │   ├── TOC.jsx
+│   │   ├── UploadBrochure.jsx
+│   │   ├── ResourcePerson.jsx
+│   │   ├── GeoTagPhotos.jsx
+│   │   ├── Attendance.jsx
+│   │   ├── Feedback.jsx
+│   │   └── FDPAttendedForm.jsx
+│   ├── ExpertTalk/
+│   │   ├── Summary.jsx
+│   │   ├── TOC.jsx
+│   │   ├── UploadBrochure.jsx
+│   │   ├── ResourcePerson.jsx
+│   │   ├── GeoTagPhotos.jsx
+│   │   ├── Attendance.jsx
+│   │   ├── Feedback.jsx
+│   │   └── FDPAttendedForm.jsx
+│   ├── Template/
+│   │   └── TemplatePreview.jsx
+│   └── Download/
+│       └── DownloadPage.jsx
+├── services/
+│   ├── fdpAttendedService.js
+│   ├── fdpConductedService.js
+│   └── expertTalkService.js
+├── App.jsx
+└── main.jsx
