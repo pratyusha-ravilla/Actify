@@ -1,5 +1,11 @@
 import axios from "axios";
-const API = "http://localhost:5001/api/fdp-conducted";
 
-export const createFDPConducted = (data) => axios.post(API, data);
-export const getAllFDPConducted = () => axios.get(API);
+const API_URL = "http://localhost:5001/api/fdp-conducted";
+
+export const createFDPConducted = async (data) => {
+  return axios.post(API_URL, data);
+};
+
+export const getFDPConducted = async () => {
+  return axios.get(API_URL);
+};

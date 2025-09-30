@@ -1,0 +1,14 @@
+.download-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.download-options button {
+  padding: 8px 14px;
+  border: none;
+  background: #1976d2;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}

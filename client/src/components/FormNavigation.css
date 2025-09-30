@@ -1,0 +1,19 @@
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.form-nav button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.form-nav button:hover {
+  background-color: #115293;
+}

@@ -1,59 +1,112 @@
-import { useState } from "react";
-import FormNavigation from "../../components/FormNavigation";
+
+// import { useState, useContext } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { FDPAttendedContext } from "../../context/FDPAttendedContext";
+
+// import Summary from "./summary";
+// import TOC from "./TOC";
+// import ResourcePerson from "./ResourcePerson";
+// import GeoTagPhotos from "./GeoTagPhotos";
+// import Attendance from "./Attendance";
+// import Feedback from "./Feedback";
+// import UploadBrochure from "./UploadBrochure";
+
+// import { createFDPAttended } from "../../services/fdpAttendedService";
+
+// export default function FDPAttendedForm() {
+//   const navigate = useNavigate();
+//   const [step, setStep] = useState(1);
+//   const { formData } = useContext(FDPAttendedContext);
+
+//   const nextStep = () => setStep(step + 1);
+//   const prevStep = () => setStep(step - 1);
+
+//   const handleSubmit = async () => {
+//     try {
+//       await createFDPAttended(formData); // API call
+//       navigate("/fdp-attended/template-preview");
+//     } catch (err) {
+//       console.error(err);
+//       alert("Error submitting form");
+//     }
+//   };
+
+//   return (
+//     <div>
+//       {step === 1 && <Summary />}
+//       {step === 2 && <TOC />}
+//       {step === 3 && <ResourcePerson />}
+//       {step === 4 && <GeoTagPhotos />}
+//       {step === 5 && <Attendance />}
+//       {step === 6 && <Feedback />}
+//       {step === 7 && <UploadBrochure />}
+
+//       <div style={{ marginTop: "20px" }}>
+//         {step > 1 && <button onClick={prevStep}>Previous</button>}
+//         {step < 7 && <button onClick={nextStep}>Next</button>}
+//         {step === 7 && <button onClick={handleSubmit}>Submit & Preview Template</button>}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { FDPAttendedContext } from "../../context/FDPAttendedContext";
+
 import Summary from "./Summary";
 import TOC from "./TOC";
-import UploadBrochure from "./UploadBrochure";
 import ResourcePerson from "./ResourcePerson";
 import GeoTagPhotos from "./GeoTagPhotos";
 import Attendance from "./Attendance";
 import Feedback from "./Feedback";
-import { useNavigate } from "react-router-dom";
+import UploadBrochure from "./UploadBrochure";
+
+import { createFDPAttended } from "../../services/fdpAttendedService";
 
 export default function FDPAttendedForm() {
-  const [step, setStep] = useState(0);
-  const [formData, setFormData] = useState({
-    title: "",
-    summary: "",
-    toc: "",
-    brochure: "",
-    resourcePersons: [],
-    geoTagPhotos: [],
-    attendanceFile: "",
-    feedback: {},
-  });
-
   const navigate = useNavigate();
-
-  const steps = [
-    <Summary formData={formData} setFormData={setFormData} />,
-    <TOC formData={formData} setFormData={setFormData} />,
-    <UploadBrochure formData={formData} setFormData={setFormData} />,
-    <ResourcePerson formData={formData} setFormData={setFormData} />,
-    <GeoTagPhotos formData={formData} setFormData={setFormData} />,
-    <Attendance formData={formData} setFormData={setFormData} />,
-    <Feedback formData={formData} setFormData={setFormData} />,
-  ];
+  const [step, setStep] = useState(1);
+  const { formData } = useContext(FDPAttendedContext);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
 
-  const handleSubmit = () => {
-    // Here you can call API to save formData
-    console.log("Submitting FDP Attended:", formData);
-    navigate("/template-preview", { state: { data: formData } });
+  const handleSubmit = async () => {
+    if (!formData.title) {
+      alert("Title is required");
+      return;
+    }
+    try {
+      await createFDPAttended(formData);
+      navigate("/template-preview"); // fixed path
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting form");
+    }
   };
 
   return (
-    <div>
-      <h2>FDP Attended Form</h2>
-      {steps[step]}
-      <FormNavigation
-        step={step}
-        total={steps.length}
-        nextStep={nextStep}
-        prevStep={prevStep}
-        onSubmit={handleSubmit}
-      />
+    <div style={{ padding: "20px" }}>
+      <h1>FDP Attended Form</h1>
+
+      {step === 1 && <Summary />}
+      {step === 2 && <TOC />}
+      {step === 3 && <ResourcePerson />}
+      {step === 4 && <GeoTagPhotos />}
+      {step === 5 && <Attendance />}
+      {step === 6 && <Feedback />}
+      {step === 7 && <UploadBrochure />}
+
+      <div style={{ marginTop: "20px" }}>
+        {step > 1 && <button onClick={prevStep}>Previous</button>}
+        {step < 7 && <button onClick={nextStep}>Next</button>}
+        {step === 7 && (
+          <button onClick={handleSubmit}>Submit & Preview Template</button>
+        )}
+      </div>
     </div>
   );
 }

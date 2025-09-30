@@ -1,20 +1,22 @@
-export default function GeoTagPhotos({ formData, setFormData }) {
-  const addPhoto = () => {
-    setFormData({ ...formData, geoTagPhotos: [...formData.geoTagPhotos, ""] });
-  };
-  const updatePhoto = (index, value) => {
-    const updated = [...formData.geoTagPhotos];
-    updated[index] = value;
-    setFormData({ ...formData, geoTagPhotos: updated });
+import React from "react";
+
+const GeoTagPhotos = ({ data = [], onChange }) => {
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files).map((f) => f.name);
+    onChange([...data, ...files]);
   };
 
   return (
     <div>
-      <h3>Geo Tag Photos</h3>
-      {formData.geoTagPhotos.map((photo, i) => (
-        <input key={i} placeholder="Photo URL" value={photo} onChange={(e) => updatePhoto(i, e.target.value)} />
-      ))}
-      <button onClick={addPhoto}>Add Photo</button>
+      <h3>Geo-Tagged Photos</h3>
+      <input type="file" multiple onChange={handleFileChange} />
+      <ul>
+        {data.map((photo, idx) => (
+          <li key={idx}>{photo}</li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
+
+export default GeoTagPhotos;

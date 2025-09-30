@@ -37,10 +37,13 @@
 
 
 
-
 import FDPConducted from "../models/FDPConducted.js";
-import { generatePDF } from "../utils/pdfUtils.js";
 import path from "path";
+import fs from "fs";
+import {
+  generateFDPConductedPDF,
+  generateFDPConductedWord,
+} from "../utils/templateUtils.js";
 
 // ➕ Create FDP Conducted
 export const createFDPConducted = async (req, res) => {
@@ -74,17 +77,31 @@ export const getFDPConducted = async (req, res) => {
   }
 };
 
-// 📝 Generate FDP Conducted PDF Report
+// 📝 Generate FDP Conducted Report
 export const generateFDPConductedReport = async (req, res) => {
   try {
     const fdp = await FDPConducted.findById(req.params.id);
     if (!fdp) return res.status(404).json({ message: "Not found" });
 
-    const filePath = path.join("reports", `fdp_conducted_${fdp._id}.pdf`);
-    await generatePDF(fdp, filePath);
+    // Ensure reports folder exists
+    const reportsDir = path.join("reports");
+    if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir);
 
-    res.download(filePath);
+    // Define file paths
+    const pdfPath = path.join(reportsDir, `fdp_conducted_${fdp._id}.pdf`);
+    const wordPath = path.join(reportsDir, `fdp_conducted_${fdp._id}.docx`);
+
+    // Generate PDF & Word
+    await generateFDPConductedPDF(fdp, pdfPath);
+    await generateFDPConductedWord(fdp, wordPath);
+
+    res.json({
+      message: "Reports generated successfully",
+      pdf: `/reports/fdp_conducted_${fdp._id}.pdf`,
+      word: `/reports/fdp_conducted_${fdp._id}.docx`,
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };

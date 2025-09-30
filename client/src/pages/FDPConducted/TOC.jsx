@@ -1,12 +1,18 @@
-export default function TOC({ formData, setFormData }) {
+import React from "react";
+
+const TOC = ({ data, onChange }) => {
   return (
     <div>
       <h3>Table of Contents</h3>
       <textarea
-        placeholder="TOC"
-        value={formData.toc}
-        onChange={(e) => setFormData({ ...formData, toc: e.target.value })}
+        value={data || ""}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Enter Table of Contents..."
+        rows="5"
+        style={{ width: "100%" }}
       />
     </div>
   );
-}
+};
+
+export default TOC;

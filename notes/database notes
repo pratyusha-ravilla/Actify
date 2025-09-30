@@ -34,7 +34,7 @@ Actify/server/
 
 
 
-
+Actify/client
 src/
 ├── components/
 │   ├── FormNavigation.jsx
