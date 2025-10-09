@@ -1,11 +1,14 @@
+// //server/src/server.js
 
+import dotenv from "dotenv";
 import mongoose from "mongoose";
-import app from "./app.js"; // import app from app.js
+import app from "./app.js";
+
+dotenv.config();
 
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/actify";
 
-// Connect to MongoDB and start server
 mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,

@@ -1,37 +1,21 @@
-// import React from "react";
 
-// export default function TOC({ formData, setFormData }) {
-//   const handleChange = (e) => {
-//     setFormData({ ...formData, toc: e.target.value });
-//   };
-
-//   return (
-//     <div>
-//       <h2>Table of Contents</h2>
-//       <textarea
-//         value={formData.toc || ""}
-//         onChange={handleChange}
-//         placeholder="Enter table of contents"
-//       />
-//     </div>
-//   );
-// }
-
+//client/src/pages/FDPAttended/TOC.jsx
 
 
 // import { useContext } from "react";
 // import { FDPAttendedContext } from "../../context/FDPAttendedContext";
 
 // export default function TOC() {
-//   const { formData, updateFormData } = useContext(FDPAttendedContext);
+//   const { formData, setFormData } = useContext(FDPAttendedContext);
 
 //   return (
 //     <div>
 //       <h2>Table of Contents</h2>
 //       <textarea
-//         placeholder="Enter TOC"
 //         value={formData.toc}
-//         onChange={(e) => updateFormData("toc", e.target.value)}
+//         onChange={(e) => setFormData({ ...formData, toc: e.target.value })}
+//         rows="5"
+//         cols="50"
 //       />
 //     </div>
 //   );
@@ -49,10 +33,9 @@ export default function TOC() {
     <div>
       <h2>Table of Contents</h2>
       <textarea
-        value={formData.toc}
+        placeholder="Enter table of contents"
+        value={formData.toc || ""}
         onChange={(e) => setFormData({ ...formData, toc: e.target.value })}
-        rows="5"
-        cols="50"
       />
     </div>
   );

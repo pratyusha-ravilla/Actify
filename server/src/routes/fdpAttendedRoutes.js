@@ -1,9 +1,11 @@
+//server/src/routes/fdpAttendedRoutes.js
 
 import express from "express";
 import {
   createFDPAttended,
   getFDPAttended,
-  generateFDPAttendedReport,
+  downloadFDPAttendedPDF,
+  downloadFDPAttendedWord,
 } from "../controllers/fdpAttendedController.js";
 
 const router = express.Router();
@@ -14,7 +16,11 @@ router.post("/", createFDPAttended);
 // Get all FDP Attended
 router.get("/", getFDPAttended);
 
-// Generate report for a specific FDP Attended
-router.get("/:id/report", generateFDPAttendedReport);
+// Download PDF
+router.get("/:id/pdf", downloadFDPAttendedPDF);
+
+// Download Word
+router.get("/:id/word", downloadFDPAttendedWord);
 
 export default router;
+

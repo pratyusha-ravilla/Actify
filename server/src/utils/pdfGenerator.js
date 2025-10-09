@@ -1,3 +1,5 @@
+//server/src/utils/pdfGenerator.js
+
 import PDFDocument from "pdfkit";
 
 export const generatePDF = async (activity) => {

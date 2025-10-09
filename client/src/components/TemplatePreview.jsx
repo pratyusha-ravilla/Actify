@@ -1,130 +1,241 @@
 
+// client/src/components/TemplatePreview.jsx
 
-
-// import React from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-
-// export default function TemplatePreview() {
-//   const { state } = useLocation();
-//   const data = state?.data;
-//   const navigate = useNavigate();
-
-//   if (!data) return <p>No data available for preview.</p>;
-
-//   const handleProceedToDownload = () => {
-//     navigate("/download", { state: { data } });
-//   };
-
-//   return (
-//     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-//       <h1>FDP Attended Preview</h1>
-//       <h2>{data.title}</h2>
-//       <h3>Summary</h3>
-//       <p>{data.summary}</p>
-
-//       <h3>Table of Contents</h3>
-//       <p>{data.toc}</p>
-
-//       <h3>Resource Persons</h3>
-//       <ul>
-//         {data.resourcePersons?.map((rp, idx) => (
-//           <li key={idx}>{rp.name} - {rp.designation} ({rp.institution})</li>
-//         ))}
-//       </ul>
-
-//       <h3>Brochure</h3>
-//       <p>{data.brochure}</p>
-
-//       <h3>Geo Tag Photos</h3>
-//       <ul>
-//         {data.geoTagPhotos?.map((photo, idx) => (
-//           <li key={idx}>{photo}</li>
-//         ))}
-//       </ul>
-
-//       <h3>Attendance File</h3>
-//       <p>{data.attendanceFile}</p>
-
-//       <h3>Feedback</h3>
-//       <pre>{JSON.stringify(data.feedback, null, 2)}</pre>
-
-//       <button
-//         style={{ marginTop: "20px", padding: "10px 15px", backgroundColor: "#1976d2", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-//         onClick={handleProceedToDownload}
-//       >
-//         Proceed to Download
-//       </button>
-//     </div>
-//   );
-// }
-
-
-
-
-import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { FDPAttendedContext } from "../context/FDPAttendedContext";
 
 export default function TemplatePreview() {
   const { state } = useLocation();
-  const data = state?.data;
   const navigate = useNavigate();
+  const { formData, setFormData } = useContext(FDPAttendedContext);
+
+  const [data, setData] = useState(state?.data || formData || null);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  const API_BASE = "http://localhost:5001"; // Update if deploying
+
+  // Load preview data
+  useEffect(() => {
+    if (state?.data) {
+      localStorage.setItem("templatePreviewData", JSON.stringify(state.data));
+      setData(state.data);
+      setFormData(state.data);
+    } else if (formData && Object.keys(formData).length > 0) {
+      setData(formData);
+    } else {
+      const savedData = localStorage.getItem("templatePreviewData");
+      if (savedData) setData(JSON.parse(savedData));
+    }
+  }, [state, formData, setFormData]);
+
+  // Save to backend
+  const handleSaveToDatabase = async () => {
+    if (!data) {
+      setMessage("⚠️ No FDP data found to save!");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setMessage("⏳ Saving FDP Attended data...");
+
+      const response = await fetch(`${API_BASE}/api/fdp-attended`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result?._id) {
+        setFormData({ ...data, _id: result._id });
+        localStorage.setItem("savedFDPId", result._id);
+
+        setMessage("✅ FDP Attended data saved successfully!");
+        console.log("Saved FDP entry:", result);
+      } else {
+        setMessage(`❌ Failed to save: ${result.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      console.error("Error saving FDP data:", err);
+      setMessage("❌ Error while saving. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Download PDF
+  const handleDownloadPDF = async () => {
+    if (!data?._id) {
+      setMessage("⚠️ Save data first to download PDF!");
+      return;
+    }
+
+    try {
+      setDownloading(true);
+      const response = await fetch(`${API_BASE}/api/fdp-attended/${data._id}/pdf`);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${data.title || "fdp_attended"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading PDF:", err);
+      setMessage("❌ Error downloading PDF. Please try again.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  // Download Word
+  const handleDownloadWord = async () => {
+    if (!data?._id) {
+      setMessage("⚠️ Save data first to download Word document!");
+      return;
+    }
+
+    try {
+      setDownloading(true);
+      const response = await fetch(`${API_BASE}/api/fdp-attended/${data._id}/word`);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${data.title || "fdp_attended"}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading Word:", err);
+      setMessage("❌ Error downloading Word document. Please try again.");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   if (!data) return <p>No data available for preview.</p>;
 
-  const handleProceedToDownload = () => {
-    // Update path to match the route
-    navigate("/download", { state: { data } });
-  };
-
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>FDP Attended Preview</h1>
-      <h2>{data.title}</h2>
-      <h3>Summary</h3>
-      <p>{data.summary}</p>
+    <div style={{ padding: "20px" }}>
+      <h1>Template Preview</h1>
+
+      <p><strong>Title:</strong> {data.title || "N/A"}</p>
+      <p><strong>Date:</strong> {data.date || "N/A"}</p>
+      <p><strong>Venue:</strong> {data.venue || "N/A"}</p>
 
       <h3>Table of Contents</h3>
-      <p>{data.toc}</p>
+      <p>{data.toc || "N/A"}</p>
 
       <h3>Resource Persons</h3>
       <ul>
-        {data.resourcePersons?.map((rp, idx) => (
-          <li key={idx}>
-            {rp.name} - {rp.designation} ({rp.institution})
-          </li>
-        ))}
+        {data.resourcePersons?.length > 0 ? (
+          data.resourcePersons.map((p, i) => (
+            <li key={i}>{p.name || "N/A"} — {p.designation || "N/A"} ({p.institution || "N/A"})</li>
+          ))
+        ) : (
+          <li>No resource persons listed.</li>
+        )}
       </ul>
 
-      <h3>Brochure</h3>
-      <p>{data.brochure}</p>
-
-      <h3>Geo Tag Photos</h3>
+      <h3>Geo-Tagged Photos</h3>
       <ul>
-        {data.geoTagPhotos?.map((photo, idx) => (
-          <li key={idx}>{photo}</li>
-        ))}
+        {data.geoTagPhotos?.length > 0 ? (
+          data.geoTagPhotos.map((photo, i) => <li key={i}>{photo}</li>)
+        ) : (
+          <li>No geo-tagged photos provided.</li>
+        )}
       </ul>
 
-      <h3>Attendance File</h3>
-      <p>{data.attendanceFile}</p>
+      <h3>Attendance</h3>
+      <ul>
+        {data.attendance?.length > 0 ? (
+          data.attendance.map((att, i) => <li key={i}>{att}</li>)
+        ) : (
+          <li>No attendance records.</li>
+        )}
+      </ul>
 
       <h3>Feedback</h3>
-      <pre>{JSON.stringify(data.feedback, null, 2)}</pre>
+      <p>{typeof data.feedback === "object" ? JSON.stringify(data.feedback, null, 2) : data.feedback || "N/A"}</p>
 
-      <button
-        style={{
-          marginTop: "20px",
-          padding: "10px 15px",
-          backgroundColor: "#1976d2",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-        onClick={handleProceedToDownload}
-      >
-        Proceed to Download
-      </button>
+      <h3>Brochure</h3>
+      <p>{data.brochure || "N/A"}</p>
+
+      {/* Action Buttons */}
+      <div style={{ marginTop: "20px" }}>
+        <button
+          onClick={handleSaveToDatabase}
+          disabled={saving}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: saving ? "#888" : "#4CAF50",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: saving ? "not-allowed" : "pointer",
+            marginRight: "10px",
+          }}
+        >
+          {saving ? "Saving..." : "💾 Save to Database"}
+        </button>
+
+        <button
+          onClick={handleDownloadPDF}
+          disabled={downloading}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: downloading ? "#888" : "#f44336",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: downloading ? "not-allowed" : "pointer",
+            marginRight: "10px",
+          }}
+        >
+          {downloading ? "Downloading..." : "📄 Download PDF"}
+        </button>
+
+        <button
+          onClick={handleDownloadWord}
+          disabled={downloading}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: downloading ? "#888" : "#9C27B0",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: downloading ? "not-allowed" : "pointer",
+            marginRight: "10px",
+          }}
+        >
+          {downloading ? "Downloading..." : "📝 Download Word"}
+        </button>
+
+        <button
+          onClick={() => navigate("/")}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#2196F3",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+        >
+          Back to Dashboard
+        </button>
+      </div>
+
+      {message && <p style={{ marginTop: "15px", fontWeight: "bold" }}>{message}</p>}
     </div>
   );
 }
+
