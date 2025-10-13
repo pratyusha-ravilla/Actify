@@ -28,22 +28,40 @@ const ResourcePersonSchema = new mongoose.Schema(
 //   { timestamps: true }
 // );
 
+// const FDPAttendedSchema = new mongoose.Schema(
+//   {
+//     title: { type: String, required: true },
+//     summary: { type: String, default: "" },
+//     toc: { type: String, default: "" },
+//     brochure: { type: String, default: "" },
+//     geoTagPhotos: [{ type: String }],
+//     attendanceFile: { type: String, default: "" },
+//     attendance: [{ type: String }], // ✅ add this
+//     resourcePersons: [ResourcePersonSchema],
+//     feedback: { type: mongoose.Schema.Types.Mixed, default: {} },
+//     createdBy: { type: String, default: "faculty" },
+//   },
+//   { timestamps: true }
+// );
+
+//H's code
+
 const FDPAttendedSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
+    date: { type: String, required: true }, // ✅ add this
+    venue: { type: String, required: true }, // ✅ add this
     summary: { type: String, default: "" },
     toc: { type: String, default: "" },
     brochure: { type: String, default: "" },
     geoTagPhotos: [{ type: String }],
     attendanceFile: { type: String, default: "" },
-    attendance: [{ type: String }], // ✅ add this
+    attendance: [{ type: String }],
     resourcePersons: [ResourcePersonSchema],
     feedback: { type: mongoose.Schema.Types.Mixed, default: {} },
     createdBy: { type: String, default: "faculty" },
   },
   { timestamps: true }
 );
-
-
 
 export default mongoose.model("FDPAttended", FDPAttendedSchema);
