@@ -1,4 +1,7 @@
+
+
 // //server/src/controllers/fdpAttendedControllers.js
+
 
 // import FDPAttended from "../models/FDPAttended.js";
 // import path from "path";
@@ -9,17 +12,23 @@
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
 
-// // Create FDP Attended
+// // ✅ Create FDP Attended
 // export const createFDPAttended = async (req, res) => {
 //   try {
 //     const fdp = new FDPAttended({
-//       title: req.body.title || "",
+//       activityName: req.body.activityName || "",  // ✅ updated field
+//       coordinator: req.body.coordinator || "",    // ✅ added
+//       date: req.body.date || "",
+//       duration: req.body.duration || "",          // ✅ added
+//       pos: req.body.pos || "",                    // ✅ added
+
 //       summary: req.body.summary || "",
 //       toc: req.body.toc || "",
 //       brochure: req.body.brochure || "",
-//       resourcePersons: req.body.resourcePersons || [],
 //       geoTagPhotos: req.body.geoTagPhotos || [],
 //       attendanceFile: req.body.attendanceFile || "",
+//       attendance: req.body.attendance || [],
+//       resourcePersons: req.body.resourcePersons || [],
 //       feedback: req.body.feedback || {},
 //       createdBy: req.body.createdBy || "faculty",
 //     });
@@ -32,7 +41,7 @@
 //   }
 // };
 
-// // Get all FDP Attended
+// // ✅ Get all FDP Attended
 // export const getFDPAttended = async (req, res) => {
 //   try {
 //     const data = await FDPAttended.find().sort({ createdAt: -1 });
@@ -55,9 +64,9 @@
 //     const pdfPath = path.join(tempDir, `fdp_attended_${fdp._id}.pdf`);
 //     await generateFDPAttendedPDF(fdp, pdfPath);
 
-//     res.download(pdfPath, `${fdp.title || "fdp_attended"}.pdf`, (err) => {
+//     res.download(pdfPath, `${fdp.activityName || "fdp_attended"}.pdf`, (err) => {
 //       if (err) console.error(err);
-//       fs.unlinkSync(pdfPath); // Remove temp file after download
+//       fs.unlinkSync(pdfPath); // remove temp file after download
 //     });
 //   } catch (err) {
 //     console.error("Error generating PDF:", err);
@@ -77,9 +86,9 @@
 //     const wordPath = path.join(tempDir, `fdp_attended_${fdp._id}.docx`);
 //     await generateFDPAttendedWord(fdp, wordPath);
 
-//     res.download(wordPath, `${fdp.title || "fdp_attended"}.docx`, (err) => {
+//     res.download(wordPath, `${fdp.activityName || "fdp_attended"}.docx`, (err) => {
 //       if (err) console.error(err);
-//       fs.unlinkSync(wordPath); // Remove temp file after download
+//       fs.unlinkSync(wordPath); // remove temp file after download
 //     });
 //   } catch (err) {
 //     console.error("Error generating Word:", err);
@@ -89,9 +98,8 @@
 
 
 
-//H's Code
 
-//server/src/controllers/fdpAttendedControllers.js
+
 
 import FDPAttended from "../models/FDPAttended.js";
 import path from "path";
@@ -102,65 +110,41 @@ import { generateFDPAttendedPDF, generateFDPAttendedWord } from "../utils/templa
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create FDP Attended
-
-//p's code
-// export const createFDPAttended = async (req, res) => {
-//   try {
-//     const fdp = new FDPAttended({
-//       title: req.body.title || "",
-//       summary: req.body.summary || "",
-//       toc: req.body.toc || "",
-//       brochure: req.body.brochure || "",
-//       resourcePersons: req.body.resourcePersons || [],
-//       geoTagPhotos: req.body.geoTagPhotos || [],
-//       attendanceFile: req.body.attendanceFile || "",
-//       feedback: req.body.feedback || {},
-//       createdBy: req.body.createdBy || "faculty",
-//     });
-
-//     const savedFDP = await fdp.save();
-//     res.status(201).json(savedFDP);
-//   } catch (err) {
-//     console.error("Error creating FDP:", err);
-//     res.status(500).json({ message: err.message });
-//   }
-// };
-
-
-//H's code
+// ✅ Create FDP Attended
 export const createFDPAttended = async (req, res) => {
   try {
     const fdp = new FDPAttended({
-      title: req.body.title || "",
-      date: req.body.date || "",           // ✅ add this
-      venue: req.body.venue || "",         // ✅ add this
+      activityName: req.body.activityName || "",
+      coordinator: req.body.coordinator || "",
+      date: req.body.date || "",
+      duration: req.body.duration || "",
+      pos: req.body.pos || "",
       summary: req.body.summary || "",
       toc: req.body.toc || "",
       brochure: req.body.brochure || "",
-      resourcePersons: req.body.resourcePersons || [],
       geoTagPhotos: req.body.geoTagPhotos || [],
       attendanceFile: req.body.attendanceFile || "",
-      feedback: req.body.feedback || {},
+      attendance: req.body.attendance || [],
+      resourcePersons: req.body.resourcePersons || [],
+      feedback: req.body.feedback || "",
       createdBy: req.body.createdBy || "faculty",
     });
 
     const savedFDP = await fdp.save();
     res.status(201).json(savedFDP);
   } catch (err) {
-    console.error("Error creating FDP:", err);
+    console.error("❌ Error creating FDP:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-
-// Get all FDP Attended
+// ✅ Get All FDP Attended
 export const getFDPAttended = async (req, res) => {
   try {
     const data = await FDPAttended.find().sort({ createdAt: -1 });
     res.status(200).json(data);
   } catch (err) {
-    console.error("Error fetching FDPs:", err);
+    console.error("❌ Error fetching FDPs:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -177,12 +161,12 @@ export const downloadFDPAttendedPDF = async (req, res) => {
     const pdfPath = path.join(tempDir, `fdp_attended_${fdp._id}.pdf`);
     await generateFDPAttendedPDF(fdp, pdfPath);
 
-    res.download(pdfPath, `${fdp.title || "fdp_attended"}.pdf`, (err) => {
+    res.download(pdfPath, `${fdp.activityName || "FDP_Attended_Report"}.pdf`, (err) => {
       if (err) console.error(err);
-      fs.unlinkSync(pdfPath); // Remove temp file after download
+      fs.unlinkSync(pdfPath);
     });
   } catch (err) {
-    console.error("Error generating PDF:", err);
+    console.error("❌ Error generating PDF:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -199,13 +183,12 @@ export const downloadFDPAttendedWord = async (req, res) => {
     const wordPath = path.join(tempDir, `fdp_attended_${fdp._id}.docx`);
     await generateFDPAttendedWord(fdp, wordPath);
 
-    res.download(wordPath, `${fdp.title || "fdp_attended"}.docx`, (err) => {
+    res.download(wordPath, `${fdp.activityName || "FDP_Attended_Report"}.docx`, (err) => {
       if (err) console.error(err);
-      fs.unlinkSync(wordPath); // Remove temp file after download
+      fs.unlinkSync(wordPath);
     });
   } catch (err) {
-    console.error("Error generating Word:", err);
+    console.error("❌ Error generating Word:", err);
     res.status(500).json({ message: err.message });
   }
 };
- 
