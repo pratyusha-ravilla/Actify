@@ -46,9 +46,22 @@
 
 
 
+// server/src/models/FDPAttended.js
 
 
 import mongoose from "mongoose";
+
+// const ResourcePersonSchema = new mongoose.Schema(
+//   {
+//     name: { type: String, default: "" },
+//     designation: { type: String, default: "" },
+//     institution: { type: String, default: "" },
+//     email: { type: String, default: "" },
+//     phone: { type: String, default: "" },
+//   },
+//   { _id: false }
+// );
+
 
 const ResourcePersonSchema = new mongoose.Schema(
   {
@@ -57,9 +70,12 @@ const ResourcePersonSchema = new mongoose.Schema(
     institution: { type: String, default: "" },
     email: { type: String, default: "" },
     phone: { type: String, default: "" },
+    image: { type: String, default: "" }, // for uploaded image filename
+    otherInformation: { type: String, default: "" }, // new field
   },
   { _id: false }
 );
+  
 
 const FDPAttendedSchema = new mongoose.Schema(
   {
