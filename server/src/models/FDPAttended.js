@@ -73,7 +73,7 @@ const FDPAttendedSchema = new mongoose.Schema(
     // 🔹 Additional Report Sections
     summary: { type: String, default: "" }, // Session Report
     toc: { type: String, default: "" },
-    brochure: { type: String, default: "" }, // Invitation/Poster
+    brochure: { type: [String], default: [] }, // Invitation/Poster
     geoTagPhotos: [{ type: String }], // Photos
     attendanceFile: { type: String, default: "" }, // Attendance
     attendance: [{ type: String }],

@@ -81,3 +81,160 @@ src/
 │   └── expertTalkService.js
 ├── App.jsx
 └── main.jsx
+
+
+
+
+
+ 
+ Actify/
+│
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Sidebar/
+│   │   │   │   ├── AdminSidebar.jsx
+│   │   │   │   └── FacultySidebar.jsx
+│   │   │   │
+│   │   │   ├── ApprovalTable.jsx
+│   │   │   ├── DownloadOptions.css
+│   │   │   ├── DownloadOptions.jsx
+│   │   │   ├── FormNavigation.css
+│   │   │   ├── FormNavigation.jsx
+│   │   │   ├── Layout.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── ProtectedRoutes.jsx
+│   │   │   ├── ReportCard.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   ├── TemplatePreview.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── FDPAttendedContext.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── AdminDashboard/
+│   │   │   │   ├── AdminApprove.jsx
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── AdminHome.jsx
+│   │   │   │   ├── AdminRejected.jsx
+│   │   │   │   ├── AdminReports.jsx
+│   │   │   │   └── ManageReports.jsx
+│   │   │   │
+│   │   │   ├── Auth/
+│   │   │   │   ├── Login.jsx
+│   │   │   │   └── Register.jsx
+│   │   │   │
+│   │   │   ├── Dashboard/
+│   │   │   │   ├── Dashboard.css
+│   │   │   │   └── Dashboard.jsx
+│   │   │   │
+│   │   │   ├── Download/
+│   │   │   │   └── DownloadPage.jsx
+│   │   │   │
+│   │   │   ├── ExpertTalk/
+│   │   │   │   ├── Attendance.jsx
+│   │   │   │   ├── ExpertTalkForm.jsx
+│   │   │   │   ├── Feedback.jsx
+│   │   │   │   ├── GeoTagPhotos.jsx
+│   │   │   │   ├── ResourcePerson.jsx
+│   │   │   │   ├── Summary.jsx
+│   │   │   │   ├── TOC.jsx
+│   │   │   │   └── UploadBrochure.jsx
+│   │   │   │
+│   │   │   ├── FDPAttended/
+│   │   │   │   ├── Attendance.jsx
+│   │   │   │   ├── FDPAttendance.css
+│   │   │   │   ├── FDPAttendedForm.jsx
+│   │   │   │   ├── Feedback.jsx
+│   │   │   │   ├── GeoTagPhotos.jsx
+│   │   │   │   ├── ResourcePerson.jsx
+│   │   │   │   ├── Summary.jsx
+│   │   │   │   ├── TOC.jsx
+│   │   │   │   └── UploadBrochure.jsx
+│   │   │   │
+│   │   │   ├── FDPConducted/
+│   │   │   │   ├── Attendance.jsx
+│   │   │   │   ├── FDPConductedForm.jsx
+│   │   │   │   ├── Feedback.jsx
+│   │   │   │   ├── GeoTagPhotos.jsx
+│   │   │   │   ├── ResourcePerson.jsx
+│   │   │   │   ├── Summary.jsx
+│   │   │   │   ├── TOC.jsx
+│   │   │   │   └── UploadBrochure.jsx
+│   │   │   │
+│   │   │   ├── FacultyDashboard/
+│   │   │   │   ├── ExpertTalks.jsx
+│   │   │   │   ├── FacultyDashboard.jsx
+│   │   │   │   ├── FacultyHome.jsx
+│   │   │   │   ├── FdpAttended.jsx
+│   │   │   │   └── FdpConducted.jsx
+│   │   │   │
+│   │   │   └── Template/
+│   │   │       ├── TemplateEditor.jsx
+│   │   │       └── TemplatePreview.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   ├── expertTalkService.jsx
+│   │   │   ├── fdpAttendedService.jsx
+│   │   │   └── fdpConductedService.jsx
+│   │   │
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── .gitignore
+│   ├── README.md
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.cjs
+│   ├── tailwind.config.js
+│   └── vite.config.js
+│
+├── server/
+│   ├── reports/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── db.js
+│   │   │
+│   │   ├── controllers/
+│   │   │   ├── authController.js
+│   │   │   ├── expertTalkController.js
+│   │   │   ├── fdpAttendedController.js
+│   │   │   ├── fdpConductedController.js
+│   │   │   └── templateController.js
+│   │   │
+│   │   ├── middleware/
+│   │   │   └── uploadMiddleware.js
+│   │   │
+│   │   ├── models/
+│   │   │   ├── ExpertTalk.js
+│   │   │   ├── FDPAttended.js
+│   │   │   ├── FDPConducted.js
+│   │   │   └── User.js
+│   │   │
+│   │   ├── routes/
+│   │   │   ├── authRoutes.js
+│   │   │   ├── expertTalkRoutes.js
+│   │   │   ├── fdpAttendedRoutes.js
+│   │   │   ├── fdpConductedRoutes.js
+│   │   │   ├── templateRoutes.js
+│   │   │   └── uploadRoutes.js
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── fileUtils.js
+│   │   │   ├── pdfGenerator.js
+│   │   │   ├── pdfUtils.js
+│   │   │   └── templateUtils.js
+│   │   │
+│   │   ├── app.js
+│   │   └── server.js
+│   │
+│   ├── .gitignore
+│   ├── package-lock.json
+│   └── package.json
+│
+└── README.md

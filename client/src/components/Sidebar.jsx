@@ -25,7 +25,7 @@ import {
   Logout,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/logo.jpg";
+import logo from "../asserts/atria-logo.png";
 
 export default function Sidebar() {
   const navigate = useNavigate();
