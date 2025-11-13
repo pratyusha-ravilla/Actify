@@ -1,3 +1,6 @@
+
+//client/src/components/ProtectedRoutes.jsx
+
 import React from "react";
 import { Navigate } from "react-router-dom";
 

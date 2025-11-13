@@ -1,5 +1,7 @@
 
 
+
+
 // //server/src/app.js
 
 import express from "express";
@@ -13,6 +15,8 @@ import fdpConductedRoutes from "./routes/fdpConductedRoutes.js";
 import expertTalkRoutes from "./routes/expertTalkRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import templateRoutes from "./routes/templateRoutes.js";
+
+import fdpTemplateRoutes from "./routes/fdpTemplateRoute.js";
 
 dotenv.config(); // ✅ Load .env first
 console.log("🔍 MONGO_URI:", process.env.MONGO_URI); // Debug log to verify env is loaded
@@ -36,6 +40,7 @@ app.use("/api/fdp-conducted", fdpConductedRoutes);
 app.use("/api/expert-talks", expertTalkRoutes);
 app.use("/api/test", testRoutes);
 app.use("/saveFDPServer", templateRoutes);
+app.use("/api/template", fdpTemplateRoutes);
 
 export default app;
 

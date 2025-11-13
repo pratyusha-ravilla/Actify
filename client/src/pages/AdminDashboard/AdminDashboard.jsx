@@ -1,3 +1,5 @@
+
+//client/src/pages/AdminDashboard/AdminDashboard.jsx
 import React from "react";
 import { Users, FileText, ClipboardCheck, BarChart3, Settings } from "lucide-react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from "recharts";

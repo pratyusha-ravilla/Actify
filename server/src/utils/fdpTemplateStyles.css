@@ -1,0 +1,88 @@
+/* =======================
+   FDP Template Styling
+   ======================= */
+
+/* Common colors */
+:root {
+  --main-red: #a52a2a;
+  --deep-purple: #4b0082;
+  --light-brown: #e6c7c7;
+  --text-black: #000000;
+  --footer-gray: #444444;
+}
+
+/* Page base */
+.page {
+  font-family: "Times New Roman", serif;
+  font-size: 12pt;
+  color: var(--text-black);
+  margin: 40px 50px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  color: var(--main-red);
+  font-weight: bold;
+  font-size: 16pt;
+}
+
+.sub-header {
+  text-align: center;
+  color: var(--deep-purple);
+  font-size: 13pt;
+}
+
+/* Title */
+.report-title {
+  text-align: center;
+  font-weight: bold;
+  color: var(--deep-purple);
+  text-decoration: underline;
+  font-size: 14pt;
+  margin-top: 15px;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 25px;
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--light-brown);
+  padding: 10px;
+  font-size: 12pt;
+}
+
+.table th {
+  background-color: var(--light-brown);
+  color: var(--main-red);
+  font-weight: bold;
+  text-align: left;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  color: var(--footer-gray);
+  font-size: 10pt;
+  margin-top: 40px;
+}
+
+/* Institution footer */
+.footer-institution {
+  text-align: center;
+  color: var(--main-red);
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 12pt;
+}
+
+.footer-address {
+  text-align: center;
+  color: var(--main-red);
+  font-size: 11pt;
+}

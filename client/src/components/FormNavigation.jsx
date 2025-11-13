@@ -1,3 +1,7 @@
+
+
+//client/src/components/FormNavigation.jsx
+
 import React from "react";
 
 const FormNavigation = ({ currentStep, totalSteps, handleNext, handleBack, handleSubmit }) => {

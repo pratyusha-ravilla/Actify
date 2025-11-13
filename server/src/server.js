@@ -1,6 +1,6 @@
 
 
-// //server/src/server.js
+//server/src/server.js
 
 import dotenv from "dotenv";
 import mongoose from "mongoose";

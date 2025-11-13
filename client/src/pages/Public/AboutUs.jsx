@@ -1,3 +1,5 @@
+
+
 //client/src/pages/Public/AboutUs.jsx
 
 import React from "react";
@@ -198,3 +200,4 @@ export default function AboutUs() {
     </Box>
   );
 }
+

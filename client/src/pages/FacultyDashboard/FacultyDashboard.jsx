@@ -1,3 +1,8 @@
+
+
+
+//client/src/pages/FacultyDashboard/FacultyDashboard.jsx
+
 import React from "react";
 import { BookOpen, Presentation, Users, FileText, Calendar } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";

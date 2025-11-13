@@ -1,3 +1,7 @@
+
+
+//client/components/Sidebar/AdminSidebar.jsx
+
 import React from "react";
 import { Home, Users, ClipboardCheck, FileText, Settings, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";

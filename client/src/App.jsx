@@ -23,6 +23,9 @@ import About from "./pages/Public/AboutUs";
 import Contact from "./pages/Public/Contact";
 import Navbar from "./components/Navbar";
 
+
+import FDPTemplate from "./pages/Template/FDPTemplate.jsx";
+
 // ---------------------------
 // ✅ Protected Route Component
 // ---------------------------
@@ -94,6 +97,8 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/fdp-template" element={<FDPTemplate />} />
+
 
               {/* Protected Routes */}
               <Route

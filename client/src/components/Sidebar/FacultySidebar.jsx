@@ -1,3 +1,7 @@
+
+
+//client/components/Sidebar/FacultySidebar.jsx
+
 import React from "react";
 import { Home, BookOpen, Presentation, Users, FileText, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
