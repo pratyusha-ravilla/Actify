@@ -1,9 +1,4 @@
 
-// // client/src/pages/Faculty/RegisterEvents.jsx
-
-
-
-
 
 // import React, { useEffect, useState } from "react";
 // import {
@@ -270,6 +265,9 @@ export default function RegisterEvents() {
     } finally {
       setDeletingId(null);
     }
+    console.log("AUTH USER:", user);
+console.log("EVENT CREATED BY:", events[0]?.createdBy);
+
   };
 
   return (
@@ -381,7 +379,7 @@ export default function RegisterEvents() {
 
                 {/* ACTION BUTTONS */}
                 <Stack direction="row" spacing={2}>
-                  <Button
+                  {/* <Button
                     startIcon={<HowToRegIcon />}
                     className="register-btn"
                     disabled={registeringId === ev._id}
@@ -390,19 +388,44 @@ export default function RegisterEvents() {
                     {registeringId === ev._id
                       ? "Registering..."
                       : "Register for Event"}
-                  </Button>
+                  </Button> */}
+
+                <Button
+  startIcon={<HowToRegIcon />}
+  className="register-btn"
+  disabled={
+    ev.approvalStatus !== "approved" ||
+    registeringId === ev._id
+  }
+  onClick={() => register(ev._id)}
+>
+  {ev.approvalStatus !== "approved"
+    ? "Awaiting Approval"
+    : "Register for Event"}
+</Button>
+
+
+
+
 
                   {/* DELETE – ONLY CREATOR */}
-                  {user?._id === ev.createdBy?._id && (
-  <Button
-    color="error"
-    variant="outlined"
-    startIcon={<DeleteOutlineIcon />}
-    onClick={() => deleteEvent(ev._id)}
-  >
-    Delete
-  </Button>
+{/* DELETE – ONLY CREATOR */}
+{user &&
+  ev.createdBy &&
+  String(user.id) === String(ev.createdBy._id) && (
+    <Button
+      color="error"
+      variant="outlined"
+      startIcon={<DeleteOutlineIcon />}
+      onClick={() => deleteEvent(ev._id)}
+      disabled={deletingId === ev._id}
+    >
+      {deletingId === ev._id ? "Deleting..." : "Delete"}
+
+    </Button>
+    
 )}
+
 
                 </Stack>
               </Stack>

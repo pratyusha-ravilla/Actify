@@ -1,9 +1,4 @@
 
-
-
-
-
-
 // server/src/models/Activity.js
 import mongoose from "mongoose";
 

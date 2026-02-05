@@ -5,11 +5,20 @@
 
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
+// import {
+//   getOpenEvents,
+//   registerForEvent,
+//   myRegistrations,
+// } from "../controllers/eventController.js";
+
+
 import {
   getOpenEvents,
   registerForEvent,
   myRegistrations,
+  myCreatedEvents,   // ✅ ADD THIS
 } from "../controllers/eventController.js";
+
 
 import { createEvent } from "../controllers/eventController.js";
 
@@ -61,5 +70,8 @@ router.put(
 );
 
 
+
+// routes
+router.get("/mine", authMiddleware, myCreatedEvents);
 
 export default router;

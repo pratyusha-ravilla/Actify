@@ -11,44 +11,18 @@ import Notification from "../models/Notification.js";
  * List all open events for faculty registration
  */
 
-// export const getOpenEvents = async (req, res) => {
-//   try {
-//     const events = await Event.find({ status: "open" }).sort({ date: 1 });
-//     res.json(events);
-//   } catch (err) {
-//     res.status(500).json({ message: "Failed to fetch events" });
-//   }
-// };
-
-//create event
-
-
-// GET /api/events/open
-
-
-
-// export const getOpenEvents = async (req, res) => {
-//   try {
-//     const events = await Event.find({
-//       approvalStatus: "approved",
-//       status: "open"
-//     }).sort({ startDate: 1 });
-
-//     res.json(events);
-//   } catch (err) {
-//     res.status(500).json({ message: "Failed to fetch events" });
-//   }
-// };
-
 
 
 export const getOpenEvents = async (req, res) => {
   try {
     const events = await Event.find({
-      approvalStatus: "approved",
-      status: "open"
+      status: "open",
+      $or: [
+        { approvalStatus: "approved" },        // visible to all
+        { createdBy: req.user._id }            // visible to creator
+      ]
     })
-      .populate("createdBy", "name email")
+      .populate("createdBy", "_id name")
       .sort({ startDate: 1 });
 
     res.json(events);
@@ -56,7 +30,6 @@ export const getOpenEvents = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch events" });
   }
 };
-
 
 
 
@@ -104,7 +77,6 @@ export const createEvent = async (req, res) => {
 
 
 
-
 /**
  * POST /api/events/:id/register
  * Faculty registers for an event
@@ -136,8 +108,6 @@ export const registerForEvent = async (req, res) => {
     res.status(500).json({ message: "Registration failed" });
   }
 };
-
-
 
 
 /**
@@ -189,79 +159,33 @@ const events = await Event.find({ status: "open" })
 };
 
 
-// export const approveEvent = async (req, res) => {
-//   try {
-//     const event = await Event.findById(req.params.id);
-//     if (!event) {
-//       return res.status(404).json({ message: "Event not found" });
-//     }
-
-//     event.status = "approved";
-//     await event.save();
-
-//     res.json({ message: "Event approved", event });
-//   } catch (err) {
-//     res.status(500).json({ message: "Approval failed" });
-//   }
-// };
-
 
 
 export const approveEvent = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) {
-      return res.status(404).json({ message: "Event not found" });
-    }
+  const event = await Event.findById(req.params.id);
+  if (!event) return res.status(404).json({ message: "Event not found" });
 
-    event.approvalStatus = "approved";
-    await event.save();
+  event.approvalStatus = "approved";
+  event.approvedBy = req.user._id;
+  event.approvedAt = new Date();
+  await event.save();
 
-    res.json({ message: "Event approved", event });
-  } catch (err) {
-    res.status(500).json({ message: "Approval failed" });
-  }
+  res.json({ message: "Event approved" });
 };
 
 
-
-// export const rejectEvent = async (req, res) => {
-//   try {
-//     const event = await Event.findById(req.params.id);
-//     if (!event) {
-//       return res.status(404).json({ message: "Event not found" });
-//     }
-
-//     event.status = "rejected";
-//     await event.save();
-
-//     res.json({ message: "Event rejected", event });
-//   } catch (err) {
-//     res.status(500).json({ message: "Rejection failed" });
-//   }
-// };
-
-
-
-
-//event registration stats
 
 export const rejectEvent = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) {
-      return res.status(404).json({ message: "Event not found" });
-    }
+  const event = await Event.findById(req.params.id);
+  if (!event) return res.status(404).json({ message: "Event not found" });
 
-    event.approvalStatus = "rejected";
-    await event.save();
+  event.approvalStatus = "rejected";
+  event.approvedBy = req.user._id;
+  event.approvedAt = new Date();
+  await event.save();
 
-    res.json({ message: "Event rejected", event });
-  } catch (err) {
-    res.status(500).json({ message: "Rejection failed" });
-  }
+  res.json({ message: "Event rejected" });
 };
-
 
 
 
@@ -283,3 +207,21 @@ export const getEventRegistrations = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch registrations" });
   }
 };
+
+
+
+// new update server/src/controllers/eventController.js
+export const myCreatedEvents = async (req, res) => {
+  try {
+    const events = await Event.find({
+      createdBy: req.user._id
+    })
+      .populate("createdBy", "_id name")
+      .sort({ createdAt: -1 });
+
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch created events" });
+  }
+};
+
