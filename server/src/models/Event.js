@@ -1,6 +1,4 @@
-
 import mongoose from "mongoose";
-
 
 /* ================= REGISTRATION SUB-SCHEMA ================= */
 const registrationSchema = new mongoose.Schema(
@@ -8,22 +6,19 @@ const registrationSchema = new mongoose.Schema(
     faculty: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     registeredAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     attendanceMarked: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  { _id: false }
-
+  { _id: false },
 );
-
-
 
 /* ================= EVENT SCHEMA ================= */
 const eventSchema = new mongoose.Schema(
@@ -31,39 +26,44 @@ const eventSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     description: {
       type: String,
-      trim: true
+      trim: true,
     },
 
     department: {
       type: String,
-      required: true
+      required: true,
     },
 
-    eventType: {
+   eventType: {
+  type: String,
+  enum: ["expert_talk", "conducted", "attended", "others"],
+  required: true,
+},
+
+    // ✅ Add this new field
+    customEventType: {
       type: String,
-      enum: ["Workshop", "Expert Talk", "Conducted","Attended"],
-      required: true
     },
 
     startDate: {
       type: Date,
-      required: true
+      required: true,
     },
 
     endDate: {
       type: Date,
-      required: true
+      required: true,
     },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
 
     registrations: [registrationSchema],
@@ -71,36 +71,31 @@ const eventSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["open", "closed"],
-      default: "open"
+      default: "open",
     },
 
     //approval event
 
     approvalStatus: {
-  type: String,
-  enum: ["pending", "approved", "rejected"],
-  default: "pending"
-},
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
 
-status: {
-  type: String,
-  enum: ["open", "closed"],
-  default: "open"
-},
+    status: {
+      type: String,
+      enum: ["open", "closed"],
+      default: "open",
+    },
 
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
 
-approvedBy: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "User"
-},
-
-approvedAt: Date,
-
+    approvedAt: Date,
   },
-  { timestamps: true }
-
+  { timestamps: true },
 );
-
-
 
 export default mongoose.model("Event", eventSchema);

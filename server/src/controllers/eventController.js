@@ -1,5 +1,3 @@
-
-
 //server/src/controllers/eventController.js
 
 import Event from "../models/Event.js";
@@ -11,16 +9,14 @@ import Notification from "../models/Notification.js";
  * List all open events for faculty registration
  */
 
-
-
 export const getOpenEvents = async (req, res) => {
   try {
     const events = await Event.find({
       status: "open",
       $or: [
-        { approvalStatus: "approved" },        // visible to all
-        { createdBy: req.user._id }            // visible to creator
-      ]
+        { approvalStatus: "approved" }, // visible to all
+        { createdBy: req.user._id }, // visible to creator
+      ],
     })
       .populate("createdBy", "_id name")
       .sort({ startDate: 1 });
@@ -31,41 +27,42 @@ export const getOpenEvents = async (req, res) => {
   }
 };
 
-
-
 export const createEvent = async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const {
-      title,
-      description,
-      department,
-      eventType,
-      startDate,
-      endDate
-    } = req.body;
-
+    const { title, description, department, eventType, customEventType,startDate, endDate } =
+      req.body;
+ // 🔐 If Others selected, require custom event type
+    if (eventType === "others" && !customEventType) {
+      return res.status(400).json({
+        message: "Please specify the event type",
+      });
+    }
     const event = await Event.create({
       title,
       description,
       department,
       eventType,
+      customEventType: eventType === "others" ? customEventType : null,
       startDate,
       endDate,
-      createdBy: req.user._id
+      createdBy: req.user._id,
     });
+   
+const displayType =
+      eventType === "others" ? customEventType : eventType;
 
     // 🔔 CREATE NOTIFICATION
     await Notification.create({
       title: "New Event Created",
-      message: `${req.user.name} created a new ${eventType} event: "${title}"`,
+      message: `${req.user.name} created a new ${displayType} event: "${title}"`,
       type: "EVENT_CREATED",
       targetRoles: ["admin", "hod", "principal"],
       relatedEvent: event._id,
-      createdBy: req.user._id
+      createdBy: req.user._id,
     });
 
     res.status(201).json(event);
@@ -74,8 +71,6 @@ export const createEvent = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 /**
  * POST /api/events/:id/register
@@ -90,7 +85,7 @@ export const registerForEvent = async (req, res) => {
     }
 
     const alreadyRegistered = event.registrations.some(
-      (r) => r.faculty.toString() === req.user._id.toString()
+      (r) => r.faculty.toString() === req.user._id.toString(),
     );
 
     if (alreadyRegistered) {
@@ -98,7 +93,7 @@ export const registerForEvent = async (req, res) => {
     }
 
     event.registrations.push({
-      faculty: req.user._id
+      faculty: req.user._id,
     });
 
     await event.save();
@@ -109,7 +104,6 @@ export const registerForEvent = async (req, res) => {
   }
 };
 
-
 /**
  * GET /api/events/my-registrations
  * Faculty registered events
@@ -117,7 +111,7 @@ export const registerForEvent = async (req, res) => {
 export const myRegistrations = async (req, res) => {
   try {
     const events = await Event.find({
-      "registrations.faculty": req.user._id
+      "registrations.faculty": req.user._id,
     }).sort({ startDate: 1 });
 
     res.json(events);
@@ -125,8 +119,6 @@ export const myRegistrations = async (req, res) => {
     res.status(500).json({ message: "Failed to load registrations" });
   }
 };
-
-
 
 //delete event
 
@@ -141,7 +133,7 @@ export const deleteEvent = async (req, res) => {
     // 🔒 OWNER CHECK
     if (event.createdBy.toString() !== req.user._id.toString()) {
       return res.status(403).json({
-        message: "You are not authorized to delete this event"
+        message: "You are not authorized to delete this event",
       });
     }
 
@@ -152,14 +144,10 @@ export const deleteEvent = async (req, res) => {
     res.status(500).json({ message: "Failed to delete event" });
   }
   // in getOpenEvents controller
-const events = await Event.find({ status: "open" })
-  .populate("createdBy", "name email")
-  .sort({ startDate: 1 });
-
+  const events = await Event.find({ status: "open" })
+    .populate("createdBy", "name email")
+    .sort({ startDate: 1 });
 };
-
-
-
 
 export const approveEvent = async (req, res) => {
   const event = await Event.findById(req.params.id);
@@ -173,8 +161,6 @@ export const approveEvent = async (req, res) => {
   res.json({ message: "Event approved" });
 };
 
-
-
 export const rejectEvent = async (req, res) => {
   const event = await Event.findById(req.params.id);
   if (!event) return res.status(404).json({ message: "Event not found" });
@@ -187,12 +173,12 @@ export const rejectEvent = async (req, res) => {
   res.json({ message: "Event rejected" });
 };
 
-
-
 export const getEventRegistrations = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id)
-      .populate("registrations.faculty", "name email department");
+    const event = await Event.findById(req.params.id).populate(
+      "registrations.faculty",
+      "name email department",
+    );
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
@@ -201,20 +187,18 @@ export const getEventRegistrations = async (req, res) => {
     res.json({
       title: event.title,
       eventType: event.eventType,
-      registrations: event.registrations
+      registrations: event.registrations,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch registrations" });
   }
 };
 
-
-
 // new update server/src/controllers/eventController.js
 export const myCreatedEvents = async (req, res) => {
   try {
     const events = await Event.find({
-      createdBy: req.user._id
+      createdBy: req.user._id,
     })
       .populate("createdBy", "_id name")
       .sort({ createdAt: -1 });
@@ -224,4 +208,3 @@ export const myCreatedEvents = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch created events" });
   }
 };
-

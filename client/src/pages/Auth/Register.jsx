@@ -1,5 +1,3 @@
-
-
 // // //client/src/pages/Auth/Register.jsx
 import React, { useState } from "react";
 import axiosClient from "../../utils/axiosClient";
@@ -18,6 +16,11 @@ export default function Register() {
 
   const submit = async (e) => {
     e.preventDefault();
+    // ✅ STEP 2 — Email Validation (Add Here)
+    if (!form.email.endsWith("@atria.edu")) {
+      alert("Only Atria college emails are allowed (xxxx@atria.edu)");
+      return;
+    }
     try {
       setLoading(true);
       await axiosClient.post("/auth/register", form);
@@ -34,9 +37,7 @@ export default function Register() {
     <div className="register-page">
       <div className="register-card">
         <h2 className="register-title">Create Account</h2>
-        <p className="register-subtitle">
-          Activity Report Management System
-        </p>
+        <p className="register-subtitle">Activity Report Management System</p>
 
         <form onSubmit={submit}>
           <div className="form-group">
@@ -50,11 +51,21 @@ export default function Register() {
           </div>
 
           <div className="form-group">
+            {/* <input
+              type="email"
+              placeholder=" "
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
+            <label>Email</label> */}
             <input
               type="email"
               placeholder=" "
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
+              pattern="^[a-zA-Z0-9._%+-]+@atria\.edu$"
+              title="Email must be in the format xxxx@atria.edu"
               required
             />
             <label>Email</label>
@@ -84,11 +95,7 @@ export default function Register() {
             <label>Role</label>
           </div>
 
-          <button
-            className="register-button"
-            type="submit"
-            disabled={loading}
-          >
+          <button className="register-button" type="submit" disabled={loading}>
             {loading ? "Creating Account..." : "Register"}
           </button>
         </form>

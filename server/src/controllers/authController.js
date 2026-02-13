@@ -1,7 +1,4 @@
-
-
 //server/src/controllers/authController.js
-
 
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
@@ -10,13 +7,30 @@ import jwt from "jsonwebtoken";
 /* =============================
        REGISTER USER (PUBLIC)
 ============================= */
+// export const register = async (req, res) => {
+//   try {
+//     const { name, email, password, role = "faculty" } = req.body;
+
 export const register = async (req, res) => {
   try {
     const { name, email, password, role = "faculty" } = req.body;
 
+    // 🔐 Step 1: Validate email format
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@atria\.edu$/;
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Only Atria college emails are allowed (xxxx@atria.edu)",
+      });
+    }
+
+    // ✅ Continue your existing registration logic below
+
     // Prevent creating admin accounts from public register
     if (role === "admin") {
-      return res.status(403).json({ message: "Cannot create admin account here." });
+      return res
+        .status(403)
+        .json({ message: "Cannot create admin account here." });
     }
 
     const existing = await User.findOne({ email });
@@ -32,10 +46,9 @@ export const register = async (req, res) => {
       user: {
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
-
   } catch (err) {
     res.status(500).json({ message: "Registration failed" });
   }
@@ -59,7 +72,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.json({
@@ -69,8 +82,8 @@ export const login = async (req, res) => {
         id: user._id,
         email: user.email,
         name: user.name,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
   } catch (err) {
     res.status(500).json({ message: "Login failed" });
@@ -113,7 +126,7 @@ export const addUser = async (req, res) => {
       name,
       email,
       password: hashed,
-      role
+      role,
     });
 
     res.json({ message: "User added successfully", user });
@@ -140,7 +153,7 @@ export const updateUserRole = async (req, res) => {
     const updated = await User.findByIdAndUpdate(
       req.params.id,
       { role },
-      { new: true }
+      { new: true },
     ).select("-password");
 
     res.json(updated);

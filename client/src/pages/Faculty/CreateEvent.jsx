@@ -1,5 +1,3 @@
-
-
 // client/src/pages/Faculty/CreateEvent.jsx
 
 import React, { useState } from "react";
@@ -9,12 +7,11 @@ import {
   TextField,
   Button,
   Typography,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import axiosClient from "../../utils/axiosClient";
 import { useNavigate } from "react-router-dom";
 import "./CreateEvent.css";
-
 
 export default function CreateEvent() {
   const navigate = useNavigate();
@@ -24,6 +21,8 @@ export default function CreateEvent() {
   const [description, setDescription] = useState("");
   const [department, setDepartment] = useState("");
   const [eventType, setEventType] = useState("");
+  const [customEventType, setCustomEventType] = useState("");
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,6 +30,11 @@ export default function CreateEvent() {
   /* ================= SUBMIT ================= */
   const submit = async (e) => {
     e.preventDefault();
+    // ✅ ADD IT RIGHT HERE
+    if (eventType === "Others" && !customEventType) {
+      alert("Please specify the event type");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -39,9 +43,11 @@ export default function CreateEvent() {
         title,
         description,
         department,
-        eventType,
+        eventType: eventType.toLowerCase(), // match backend enum
+        customEventType: eventType === "Others" ? customEventType : null,
+
         startDate,
-        endDate
+        endDate,
       });
 
       alert("Event created successfully");
@@ -147,95 +153,125 @@ export default function CreateEvent() {
   //   </Box>
   // );
 
-
-
-
   return (
-  <Box className="create-event-wrapper">
-    <Paper className="create-event-card">
-      <Typography variant="h5" className="create-event-title">
-        Create New Event
-      </Typography>
+    <Box className="create-event-wrapper">
+      <Paper className="create-event-card">
+        <Typography variant="h5" className="create-event-title">
+          Create New Event
+        </Typography>
 
-      <Typography className="create-event-subtitle">
-        Create and publish an event for faculty registration
-      </Typography>
+        <Typography className="create-event-subtitle">
+          Create and publish an event for faculty registration
+        </Typography>
 
-      <form onSubmit={submit} className="create-event-form">
-        <TextField
-          label="Event Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          fullWidth
-          required
-        />
-
-        <TextField
-          label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          fullWidth
-          multiline
-          rows={3}
-        />
-
-        <TextField
-          label="Department"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          fullWidth
-          required
-        />
-
-        <TextField
-          select
-          label="Event Type"
-          value={eventType}
-          onChange={(e) => setEventType(e.target.value)}
-          fullWidth
-          required
-        >
-          {["Expert Talk", "Conducted","Attended","Workshop"].map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </TextField>
-
-        <div className="create-event-dates">
+        <form onSubmit={submit} className="create-event-form">
           <TextField
-            label="Start Date"
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
+            label="Event Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             fullWidth
             required
           />
 
           <TextField
-            label="End Date"
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
+            label="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            fullWidth
+            multiline
+            rows={3}
+          />
+
+          <TextField
+            label="Department"
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
             fullWidth
             required
           />
-        </div>
 
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          disabled={loading}
-          className="create-event-submit"
-        >
-          {loading ? "Creating Event..." : "Create Event"}
-        </Button>
-      </form>
-    </Paper>
-  </Box>
-);
+          {/* <TextField
+            select
+            label="Event Type"
+            value={eventType}
+            onChange={(e) => setEventType(e.target.value)}
+            fullWidth
+            required
+          >
+            {eventType === "Others" && (
+              <TextField
+                label="Specify Event Type"
+                value={customEventType}
+                onChange={(e) => setCustomEventType(e.target.value)}
+                fullWidth
+                required
+              />
+            )}
 
+            {["Expert Talk", "Conducted", "Attended", "Others"].map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </TextField> */}
+          <TextField
+            select
+            label="Event Type"
+            value={eventType}
+            onChange={(e) => setEventType(e.target.value)}
+            fullWidth
+            required
+          >
+            {["Expert Talk", "Conducted", "Attended", "Others"].map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {eventType === "Others" && (
+            <TextField
+              label="Specify Event Type"
+              value={customEventType}
+              onChange={(e) => setCustomEventType(e.target.value)}
+              fullWidth
+              required
+            />
+          )}
+
+          <div className="create-event-dates">
+            <TextField
+              label="Start Date"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+              required
+            />
+
+            <TextField
+              label="End Date"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+              required
+            />
+          </div>
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            disabled={loading}
+            className="create-event-submit"
+          >
+            {loading ? "Creating Event..." : "Create Event"}
+          </Button>
+        </form>
+      </Paper>
+    </Box>
+  );
 }
