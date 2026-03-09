@@ -41,9 +41,11 @@ const eventSchema = new mongoose.Schema(
 
    eventType: {
   type: String,
-  enum: ["expert_talk", "conducted", "attended", "others"],
+  enum: ["expert talk", "conducted", "attended", "Others"],
   required: true,
 },
+
+
 
     // ✅ Add this new field
     customEventType: {

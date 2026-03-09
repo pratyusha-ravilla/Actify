@@ -33,9 +33,16 @@ export const createEvent = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { title, description, department, eventType, customEventType,startDate, endDate } =
-      req.body;
- // 🔐 If Others selected, require custom event type
+    const {
+      title,
+      description,
+      department,
+      eventType,
+      customEventType,
+      startDate,
+      endDate,
+    } = req.body;
+    // 🔐 If Others selected, require custom event type
     if (eventType === "others" && !customEventType) {
       return res.status(400).json({
         message: "Please specify the event type",
@@ -51,9 +58,8 @@ export const createEvent = async (req, res) => {
       endDate,
       createdBy: req.user._id,
     });
-   
-const displayType =
-      eventType === "others" ? customEventType : eventType;
+
+    const displayType = eventType === "others" ? customEventType : eventType;
 
     // 🔔 CREATE NOTIFICATION
     await Notification.create({
@@ -206,5 +212,24 @@ export const myCreatedEvents = async (req, res) => {
     res.json(events);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch created events" });
+  }
+};
+
+// new update to auto fill the contents while creating report
+export const getEventById = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id).populate(
+      "createdBy",
+      "name email",
+    );
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.json(event);
+  } catch (error) {
+    console.error("GET EVENT ERROR:", error);
+    res.status(500).json({ message: "Failed to fetch event" });
   }
 };

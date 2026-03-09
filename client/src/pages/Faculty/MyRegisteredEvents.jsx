@@ -1,13 +1,7 @@
 //client/src/pages/Faculty/MyRegisteredEvents.jsx
 
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Paper,
-  Typography,
-  Grid,
-  Button
-} from "@mui/material";
+import { Box, Paper, Typography, Grid, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../utils/axiosClient";
 
@@ -31,38 +25,37 @@ export default function MyRegistrations() {
       </Typography>
 
       <Grid container spacing={3}>
-        {events.length === 0 && (
-          <Typography>No registrations found</Typography>
-        )}
+        {events.length === 0 && <Typography>No registrations found</Typography>}
 
-        {events.map((ev) => (
-          <Grid key={ev._id} xs={12} md={4}>
-            <Paper sx={{ p: 3, borderRadius: 3 }}>
-              <Typography sx={{ fontWeight: 800 }}>
-                {ev.title}
-              </Typography>
+        {events.map((ev) => {
+          const isEventCompleted = new Date(ev.endDate) <= new Date();
 
-              <Typography sx={{ mt: 1, color: "gray" }}>
-                {ev.eventType} • {ev.department}
-              </Typography>
+          return (
+            <Grid key={ev._id} xs={12} md={4}>
+              <Paper sx={{ p: 3, borderRadius: 3 }}>
+                <Typography sx={{ fontWeight: 800 }}>{ev.title}</Typography>
 
-              <Typography sx={{ mt: 1 }}>
-                📅 {new Date(ev.startDate).toDateString()}
-              </Typography>
+                <Typography sx={{ mt: 1, color: "gray" }}>
+                  {ev.eventType} • {ev.department}
+                </Typography>
 
-              <Button
-                sx={{ mt: 2 }}
-                variant="outlined"
-                fullWidth
-                onClick={() =>
-                  navigate(`/faculty/create?fromEvent=${ev._id}`)
-                }
-              >
-                Create Report
-              </Button>
-            </Paper>
-          </Grid>
-        ))}
+                <Typography sx={{ mt: 1 }}>
+                  📅 {new Date(ev.startDate).toDateString()}
+                </Typography>
+
+                <Button
+                  sx={{ mt: 2 }}
+                  variant="outlined"
+                  fullWidth
+                  disabled={!isEventCompleted}
+                  onClick={() => navigate(`/faculty/create-report/${ev._id}`)}
+                >
+                  {isEventCompleted ? "Create Report" : "Report Locked"}
+                </Button>
+              </Paper>
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );

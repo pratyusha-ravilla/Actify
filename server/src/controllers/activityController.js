@@ -221,7 +221,7 @@ export const getPdf = async (req, res) => {
     html = html.replace(/{{resourcePhoto}}/g, toDataUrl(a.resourcePerson?.photo));
 
     // Session + feedback replacements (legacy fields)
-    html = html.replace(/{{sessionSummary}}/g, a.sessionReport?.summary || "");
+    // html = html.replace(/{{sessionSummary}}/g, a.sessionReport?.summary || "");
     html = html.replace(/{{participants}}/g, (a.sessionReport?.participantsCount ?? a.sessionReport?.participants ?? "") + "");
     html = html.replace(/{{facultyCount}}/g, (a.sessionReport?.facultyCount ?? "") + "");
     html = html.replace(/{{feedback}}/g, a.feedback || "");
@@ -247,9 +247,11 @@ for (let i = 0; i < photosArr.length; i += 2) {
         ${img1 ? `<img src="${img1}" />` : ""}
       </div>
 
-      <div class="photo-box">
-        ${img2 ? `<img src="${img2}" />` : ""}
-      </div>
+     ${img2 ? `
+<div class="photo-box">
+  <img src="${img2}" />
+</div>
+` : ""}
     </div>
     
   `;
@@ -300,9 +302,11 @@ for (let i = 0; i < feedbackArr.length; i += 2) {
         ${img1 ? `<img src="${img1}" />` : ""}
       </div>
 
-      <div class="feedback-box">
-        ${img2 ? `<img src="${img2}" />` : ""}
-      </div>
+      ${img2 ? `
+<div class="feedback-box">
+  <img src="${img2}" />
+</div>
+` : ""}
     </div>
   `;
 }
@@ -365,37 +369,29 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
     await page.setContent(html, { waitUntil: "networkidle0" });
     await page.addStyleTag({ path: CSS_PATH });
 
-   const pdf = await page.pdf({
+
+
+const pdf = await page.pdf({
   format: "A4",
   printBackground: true,
 
-  displayHeaderFooter: true,
+displayHeaderFooter: true,
 
-  headerTemplate: `
-    <div style="width:100%; text-align:center; margin-top:10px;">
-      <img src="${toBase64(HEADER_PATH)}" style="width:90%; height:auto;" />
-    </div>
-  `,
+headerTemplate: `
+  <div style="width:100%; text-align:center; margin-top:10px;">
+    <img src="${toBase64(HEADER_PATH)}" style="width:90%; height:auto;" />
+  </div>
+`,
 
-  footerTemplate: `
-    <div style="
-      width:100%;
-      font-family:'Times New Roman', Times, serif;
-      font-size:10pt;
-      color:#000;
-      padding:0 20mm;
-    ">
-      <div style="float:right;">
-        Page <span class="pageNumber"></span> of <span class="totalPages"></span>
-      </div>
-    </div>
-  `,
+footerTemplate: `<div></div>`,  // EMPTY FOOTER
+
+
 
   margin: {
-    top: "100px",     // space for header
-    bottom: "50px",   // IMPORTANT: space for footer
-    left: "20px",
-    right: "20px"
+    top: "135px",
+    bottom: "100px",
+    left: "50px",
+    right: "50px"
   }
 });
 
@@ -566,37 +562,3 @@ export const rejectActivity = async (req, res) => {
 };
 
 
-// //previewreport code
-
-// export const getPreviewHtml = async (req, res) => {
-//   try {
-//     const a = await Activity.findById(req.params.id).lean();
-//     if (!a) return res.status(404).send("Not found");
-
-//     let html = loadTemplate();
-
-//     html = html.replace(/{{cssPath}}/g, CSS_PATH.replace(/\\/g, "/"));
-//     html = html.replace(/{{headerImage}}/g, toBase64(HEADER_PATH));
-
-//     // same replacements as PDF
-//     html = html.replace(/{{reportTitle}}/g, a.reportType || "");
-//     html = html.replace(/{{academicYear}}/g, a.academicYear || "");
-//     html = html.replace(/{{activityName}}/g, a.activityName || "");
-//     html = html.replace(/{{coordinator}}/g, a.coordinator || "");
-//     html = html.replace(/{{date}}/g, a.date || "");
-//     html = html.replace(/{{duration}}/g, a.duration || "");
-//     html = html.replace(/{{poPos}}/g, a.poPos || "");
-
-//     html = html.replace(/{{invitationImage}}/g, toDataUrl(a.invitation));
-//     html = html.replace(/{{posterImage}}/g, toDataUrl(a.poster));
-//     html = html.replace(/{{resourcePhoto}}/g, toDataUrl(a.resourcePerson?.photo));
-
-//     // reuse SAME attendancePages + photoPages logic as PDF
-//     // (you can literally copy-paste from getPdf)
-
-//     res.send(html);
-//   } catch (err) {
-//     console.error("PREVIEW ERROR:", err);
-//     res.status(500).send("Preview failed");
-//   }
-// };

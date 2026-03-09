@@ -1,7 +1,4 @@
-@page {
-  size: A4;
-  margin: 18mm 20mm 20mm 20mm;
-}
+
 
 /* ===================== GLOBAL FONT SETTINGS ===================== */
 
@@ -23,6 +20,10 @@ li,
 a {
   font-family: "Times New Roman", Times, serif !important;
 }
+body {
+  padding-bottom: 20mm;   /* Extra bottom breathing space */
+}
+
 
 /* ====================== HEADER IMAGE ====================== */
 .header-container {
@@ -100,11 +101,14 @@ a {
 }
 
 /* ====================== SECTION TITLE ====================== */
+
 .section-title {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 15px;
   font-size: 18pt;
-  color: #8a1c1c;
+  color: #4b0082;
   font-weight: bold;
-  margin-top: 15mm;
   text-transform: uppercase;
 }
 
@@ -123,23 +127,6 @@ a {
 .photos-grid img {
   width: 170px;
   border: 1px solid #444;
-}
-
-.session-table {
-  width: 90%;
-  margin-top: 10mm;
-  border-collapse: collapse;
-}
-
-.session-table td {
-  border: 1px solid #444;
-  padding: 8px;
-}
-
-.session-header {
-  background: #e7c4c4;
-  font-weight: bold;
-  width: 200px;
 }
 
 .page-break {
@@ -236,18 +223,10 @@ a {
   margin-bottom: 8mm;
 }
 
-{% comment %} .invitation-image-wrapper img {
-  /* exact physical dimensions requested */
-  width: 15.12cm;
-  height: 19.46cm;
-   object-fit: contain; 
-  
-} {% endcomment %}
-
 
 .invitation-image-wrapper img {
-  max-width: 15.12cm;
-  max-height: 19.46cm;
+  max-width: 16.14cm;
+  max-height: 19.48cm;
 
   width: auto;
   height: auto;
@@ -277,19 +256,10 @@ a {
   margin-bottom: 8mm;
 }
 
-{% comment %} .poster-image-wrapper img {
-  /* same physical size used for invitation */
-  width: 16.12cm;
-  height: 17.46cm;
-  display: block;
-  object-fit: contain;  
-  object-fit: cover;
-} {% endcomment %}
-
 
 .poster-image-wrapper img {
-  max-width: 16.12cm;
-  max-height: 17.46cm;
+   max-width: 16.12cm;
+  max-height: 19.46cm;
 
   width: auto;
   height: auto;
@@ -374,103 +344,75 @@ a {
   }
 }
 
-/* ================= SESSION REPORT STYLES ================= */
 
-/* FORCE Times New Roman for everything (page, headings, table, paragraphs) */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-td,
-th,
-a {
-  font-family: "Times New Roman", Times, serif !important;
-}
 
-/* SESSION REPORT appearance */
-
-.section-title {
-  text-align: center;
-  margin-top: 16mm;
-  margin-bottom: 8mm;
-  font-size: 20pt;
-  color: #4b0082;
-  font-weight: 700;
-  text-decoration: underline;
-  text-transform: uppercase;
-}
+/* ================= SESSION REPORT ================= */
 
 .session-table {
   width: 92%;
-  margin: 10mm auto;
+  margin: 15mm auto 0 auto;
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 12pt;
+  border: 1.5px solid #000;   /* Strong outer border */
 }
 
-/* header row spanning full width */
-.session-table thead .session-header {
-  border: 1.5px solid #000;
-  font-weight: 800;
-  text-align: center;
-  padding: 8px 8px;
-  font-size: 14pt;
-  background: #fff;
+/* Repeat table header on new page */
+.session-table thead {
+  display: table-header-group;
 }
 
-/* normal cells */
-.session-table td,
-.session-table th {
+/* Table cells */
+.session-table th,
+.session-table td {
   border: 1px solid #000;
-  padding: 6px 8px;
+  padding: 10px;
   vertical-align: top;
-  word-wrap: break-word;
+  word-break: break-word;
 }
 
-/* label column style (left side labels) */
-.session-table td.session-label {
-  width: 24%;
-  font-weight: 700;
-  text-align: left;
-  white-space: normal;
-}
-
-/* standard value cell */
-.session-table td.session-value {
-  width: 24%;
-  text-align: left;
-}
-
-/* full-width centered rows like 'List of activities conducted' */
-.session-table td.session-full {
+/* Header row */
+.session-header {
+  background: #e7c4c4;
+  font-weight: bold;
+  font-size: 14pt;
   text-align: center;
-  font-weight: 500;
+}
+
+/* Label column */
+.session-label {
+  width: 25%;
+  font-weight: bold;
+}
+
+/* Summary heading */
+.summary-heading {
+  text-align: center;
+  font-weight: bold;
+  border-top: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
   padding: 10px;
 }
 
-/* the big summary box style */
-.session-table td.summary-cell {
-  min-height: 160px;
-  line-height: 1.2;
+/* Summary content cell */
+.summary-content-cell {
+  padding: 0;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  border-bottom: 1.5px solid #000;
+}
+
+/* Actual summary text */
+.summary-content {
+  padding: 15px;
+  text-align: justify;
+  line-height: 1.6;
   white-space: pre-wrap;
-  font-size: 12pt;
-  padding: 8px;
 }
 
-/* link style inside table */
-.session-table a {
-  color: #1a0dab;
-  text-decoration: underline;
-  word-break: break-all;
-}
-
-/* avoid page-break inside the table */
-@media print {
-  .session-table {
-    page-break-inside: avoid;
-  }
+/* Allow natural page breaks */
+.summary-content {
+  page-break-inside: auto;
 }
 
 /* ===== ATTENDANCE PAGE ===== */
@@ -479,55 +421,29 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 110px;
-  margin-top: 5px;
-  padding-bottom: 5px;
-}
-
-{% comment %} /* Same size as Invitation */
-.attendance-box {
-  width: auto;
-  height: auto;
-  border: 1px solid #000;
-  box-sizing: border-box;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #fff;
+  margin-top: 15px;
+  {% comment %} padding-bottom: 5px;  {% endcomment %}
 }
 
 
-.attendance-box img {
-  max-width: 15.12cm;
-  max-height: 17.46cm;
-  
-  width: auto;
-  height: auto;
-  
-  object-fit: contain;
-} {% endcomment %}
-
-
 .attendance-box {
-  width: 15.12cm;
-  height: 17.46cm;
-
+  width: 17cm;
+  height: 20cm;
   border: 1px solid #000;
   background: #fff;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
+  margin-top:15px;
   overflow: hidden;
 }
 
 .attendance-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+  object-fit: cover;
+  
 }
 
 
@@ -543,62 +459,29 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100px;
   gap: 25px;
-  margin-top: 5px;
+  margin: 10px 0 30px 0; 
+  
 }
 
- {% comment %} /* Outer border box */
-.photo-box {
-  width: auto;
-  height: auto;
-
-  border: 1px solid #000;
-  box-sizing: border-box;
-
-  /* PERFECT CENTERING */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* INNER MARGIN BETWEEN IMAGE AND BORDER */
-
-  background: #fff;
-} 
-
- /* Image itself */
-.photo-box img {
-  width: 15.23cm;
-  height: 8.58cm;
-
-  object-fit: contain;
-  display: block;
-  
-}  {% endcomment %}
-
-
 .photo-box {
   width: 15.23cm;
   height: 8.58cm;
-
   border: 1px solid #000;
   background: #fff;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
+  margin-top:10px;
   overflow: hidden; /* IMPORTANT */
 }
 
 .photo-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* FILLS BOX */
-  display: block;
+ display: block;
+  object-fit: cover;
 }
-
-
 
 
 .photo-page {
@@ -611,30 +494,9 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  padding-top: 100px; /* safe distance from header */
   gap: 25px;
+  margin: 10px 0 30px 0; 
 }
-
-{% comment %} /* Outer border */
-.feedback-box {
-  border: 1px solid #000;
-  background: #fff;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
- /* Image size – SAME AS PHOTOS */
-.feedback-box img {
-  width: 15.23cm;
-  height: 8.58cm;
-  display:block;
-  object-fit: cover;
-  object-fit: contain;
-}  {% endcomment %}
-
 
 
 .feedback-box {
@@ -647,7 +509,8 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  
+  margin-top:10px;
   overflow: hidden; /* IMPORTANT */
 }
 
@@ -659,16 +522,14 @@ a {
 }
 
 
-
-
 /* Ensure clean page separation */
 .feedback-page {
   page-break-after: always;
 }
 .section-title {
   text-align: center;
-  margin-top: 6mm; /* tweak vertical spacing as needed */
-  margin-bottom: 1mm;
+  margin-top: 1mm; /* tweak vertical spacing as needed */
+  margin-bottom: 10mm;
   font-size: 18pt; /* keep same as other section titles if desired */
   color: #4b0082;
   font-weight: bold;

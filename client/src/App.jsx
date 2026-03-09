@@ -1,6 +1,3 @@
-
-
-
 // client/src/App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
@@ -42,8 +39,6 @@ import RegisterEvents from "./pages/Faculty/RegisterEvents";
 import CreateEvent from "./pages/Faculty/CreateEvent.jsx";
 import MyRegisteredEvents from "./pages/Faculty/MyRegisteredEvents.jsx";
 
-
-
 export default function App() {
   return (
     <AuthProvider>
@@ -54,23 +49,21 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-{/* new add-on*/}
+        {/* new add-on*/}
 
-<Route path="/department/:code" element={<DepartmentReports />} />
-{/* 
+        <Route path="/department/:code" element={<DepartmentReports />} />
+        {/* 
   <Route
   path="/faculty/events"
   element={<RegisterEvents />}
 /> */}
 
-{/* //event registration */}
+        {/* //event registration */}
 
-<Route path="/faculty/events/register" element={<RegisterEvents />} />
-<Route path="/faculty/events/create" element={<CreateEvent />} />
-<Route path="/faculty/events/my" element={<MyRegisteredEvents />} />
+        <Route path="/faculty/events/register" element={<RegisterEvents />} />
+        <Route path="/faculty/events/create" element={<CreateEvent />} />
+        <Route path="/faculty/events/my" element={<MyRegisteredEvents />} />
 
- 
-  
         {/* Faculty routes (faculty role only) */}
         <Route
           path="/faculty/dashboard"
@@ -89,6 +82,11 @@ export default function App() {
           }
         />
         <Route
+          path="/faculty/create-report/:eventId"
+          element={<CreateReport />}
+        />
+
+        <Route
           path="/faculty/report/:id"
           element={
             <ProtectedRoute roles={["faculty"]}>
@@ -105,14 +103,8 @@ export default function App() {
           }
         />
 
+        <Route path="/faculty/report/:id/preview" element={<ReportPreview />} />
 
-       <Route
-  path="/faculty/report/:id/preview"
-  element={<ReportPreview />}
-/>
-
-
-        
         {/* Admin/HOD/Principal routes */}
         <Route
           path="/admin/dashboard"
@@ -137,7 +129,8 @@ export default function App() {
           path="/admin/reports"
           element={
             <ProtectedRoute roles={["admin", "hod", "principal"]}>
-              <PendingReports /> {/* default listing can be Pending or All depending on your UI */}
+              <PendingReports />{" "}
+              {/* default listing can be Pending or All depending on your UI */}
             </ProtectedRoute>
           }
         />
@@ -145,7 +138,8 @@ export default function App() {
           path="/admin/reports/all"
           element={
             <ProtectedRoute roles={["admin", "hod", "principal"]}>
-              <PendingReports /> {/* or dedicated AllReports page if you have one */}
+              <PendingReports />{" "}
+              {/* or dedicated AllReports page if you have one */}
             </ProtectedRoute>
           }
         />

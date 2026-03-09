@@ -1,26 +1,15 @@
 
-
-<!--  server/report_template.html -->  
-
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8" />
 <title>Activity Report</title>
 
-<link rel="stylesheet" href="file:///{{cssPath}}">
 </head>
 
 <body>
 
 <!-- ====================== PAGE 1 : COVER PAGE ====================== -->
-<pre>
-
-
-
-
-</pre>
 
 <h1 class="dept-title">
   Department of Computer Science & Engineering
@@ -39,132 +28,81 @@
 </table>
 
 <div class="first-page-footer">
-    <div class="academic-year">ACADEMIC YEAR {{academicYear}}</div>
-    <div class="address">
-        ATRIA INSTITUTE OF TECHNOLOGY,<br>
-        Adjacent Bangalore Baptist Hospital, Hebbal,<br>
-        Bengaluru - 560 024
-    </div>
+  <div class="academic-year">ACADEMIC YEAR {{academicYear}}</div>
+  <div class="address">
+    ATRIA INSTITUTE OF TECHNOLOGY,<br>
+    Adjacent Bangalore Baptist Hospital, Hebbal,<br>
+    Bengaluru - 560 024
+  </div>
 </div>
 
-<!-- PAGE BREAK -->
 <div class="page-break"></div>
 
-
 <!-- ====================== PAGE 2 : TABLE OF CONTENTS ====================== -->
-
-<pre>
-
-
-  
-
-</pre>
 
 <h2 class="toc-heading">TABLE OF CONTENTS</h2>
 
 <table class="toc-table">
-    <thead>
-        <tr>
-            <th>Sl. No</th>
-            <th>CONTENT</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="toc-row"><td class="slno">1.</td><td class="section-name">Invitation</td></tr>
-        <tr><td class="slno">2.</td><td class="section-name">Poster</td></tr>
-        <tr class="toc-row"><td class="slno">3.</td><td class="section-name">Resource Person Details</td></tr>
-        <tr><td class="slno">4.</td><td class="section-name">Session Report</td></tr>
-        <tr class="toc-row"><td class="slno">5.</td><td class="section-name">Attendance</td></tr>
-        <tr><td class="slno">6.</td><td class="section-name">Photos</td></tr>
-        <tr class="toc-row"><td class="slno">7.</td><td class="section-name">Feedback</td></tr>
-    </tbody>
+  <thead>
+    <tr>
+      <th>Sl. No</th>
+      <th>CONTENT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1.</td><td>Invitation</td></tr>
+    <tr><td>2.</td><td>Poster</td></tr>
+    <tr><td>3.</td><td>Resource Person Details</td></tr>
+    <tr><td>4.</td><td>Session Report</td></tr>
+    <tr><td>5.</td><td>Attendance</td></tr>
+    <tr><td>6.</td><td>Photos</td></tr>
+    <tr><td>7.</td><td>Feedback</td></tr>
+  </tbody>
 </table>
 
-<!-- PAGE BREAK -->
 <div class="page-break"></div>
 
+<!-- ====================== INVITATION ====================== -->
 
-<!-- ====================== PAGE 3 : INVITATION ====================== -->
+<h2 class="section-title">INVITATION</h2>
 
-<pre>
-
-
-  
-</pre>
-
-<section class="invitation-section">
-  <h2 class="section-title invitation-title">INVITATION</h2>
-
-  <div class="image-wrapper invitation-image-wrapper">
-      <img src="{{invitationImage}}" alt="Invitation" />
-  </div>
-</section>
+<div class="image-wrapper invitation-image-wrapper">
+  <img src="{{invitationImage}}" alt="Invitation" />
+</div>
 
 <div class="page-break"></div>
 
+<!-- ====================== POSTER ====================== -->
 
-<!-- ====================== PAGE 4 : POSTER ====================== -->
+<h2 class="section-title">POSTER</h2>
 
-<pre>
-
-
-  
-
-</pre>
-
-<section class="poster-section">
-  <h2 class="section-title poster-title">POSTER</h2>
-
-  <div class="image-wrapper poster-image-wrapper">
-      <img src="{{posterImage}}" alt="Poster" />
-  </div>
-</section>
+<div class="image-wrapper poster-image-wrapper">
+  <img src="{{posterImage}}" alt="Poster" />
+</div>
 
 <div class="page-break"></div>
 
+<!-- ====================== RESOURCE PERSON DETAILS ====================== -->
 
+<h2 class="section-title">RESOURCE PERSON DETAILS</h2>
 
-<!-- ====================== PAGE 5 : RESOURCE PERSON DETAILS ====================== -->
+<div class="resource-photo-wrapper">
+  <img src="{{resourcePhoto}}" alt="Resource Person" />
+</div>
 
-<pre>
-
-
-  
-
-</pre>
-
-<section class="resource-section">
-  <h2 class="section-title resource-title">RESOURCE PERSON DETAILS</h2>
-
-  <div class="resource-photo-wrapper">
-    <img src="{{resourcePhoto}}" alt="Resource Person" />
-  </div>
-
-  <div class="resource-details">
-    <p><strong>{{resourceName}}</strong>, {{resourceDesignation}}</p>
-    <p><em>{{resourceInstitution}}</em></p>
-
-    <div class="resource-bio">
-      {{sessionSummary}}
-    </div>
-  </div>
-</section>
+<div class="resource-details">
+  <p><strong>{{resourceName}}</strong>, {{resourceDesignation}}</p>
+  <p><em>{{resourceInstitution}}</em></p>
+</div>
 
 <div class="page-break"></div>
 
-
-<!-- ====================== PAGE 6 : SESSION REPORT ====================== -->
-
-<pre>
-
-
-
-
-</pre>
+<!-- ====================== SESSION REPORT ====================== -->
 
 <h2 class="section-title">SESSION REPORT</h2>
 
 <table class="session-table">
+
   <thead>
     <tr>
       <th class="session-header" colspan="4">SESSION REPORT</th>
@@ -173,121 +111,81 @@
 
   <tbody>
 
-    <!-- Session Name -->
     <tr>
-      <td class="session-label">Session Name</td>
-      <td class="session-value" colspan="3">{{sessionName}}</td>
-    </tr>
-
-    <!-- Resource person + coordinators -->
-    <tr>
-      <td class="session-label">Resource Person</td>
-      <td class="session-value">{{resourceName}}</td>
-
-      <td class="session-label">Co-ordinator(s)</td>
-      <td class="session-value">{{coordinators}}</td>
-    </tr>
-
-    <!-- Date + link -->
-    <tr>
-      <td class="session-label">Date</td>
-      <td class="session-value">{{date_display}}</td>
-
-      <td class="session-label">Google Meet Link</td>
-      <td class="session-value">
-        {{googleMeetLink}}
-      </td>
-    </tr>
-
-    <!-- Intended participants -->
-    <tr>
-      <td class="session-label">Intended Participants</td>
-      <td class="session-value" colspan="3">{{intendedParticipants}}</td>
-    </tr>
-
-    <!-- Attendance numbers -->
-    <tr>
-      <td class="session-label">No. of Students Present</td>
-      <td class="session-value">{{participants}}</td>
-
-      <td class="session-label">No. of Faculty Present</td>
-      <td class="session-value">{{facultyCount}}</td>
-    </tr>
-
-    <!-- Category -->
-    <tr>
-      <td class="session-label">Category of Event</td>
-      <td class="session-value" colspan="3">{{categoryOfEvent}}</td>
-    </tr>
-
-    <!-- Preamble -->
-    <tr>
-      <td class="session-full" colspan="4">List of activities conducted</td>
+      <td class="label">Session Name</td>
+      <td colspan="3">{{sessionName}}</td>
     </tr>
 
     <tr>
-      <td class="session-full" colspan="4">Preamble Session</td>
+      <td class="label">Resource Person</td>
+      <td>{{resourceName}}</td>
+      <td class="label">Co-ordinator(s)</td>
+      <td>{{coordinators}}</td>
     </tr>
 
-    <!-- Summary -->
     <tr>
-      <td class="session-label">
-        Summary
-        <br />
-        <small>(Provide in detail report of session progress)</small>
-      </td>
-      <td class="session-value summary-cell" colspan="3">
-        {{sessionSummary}}
-      </td>
+      <td class="label">Date</td>
+      <td>{{date_display}}</td>
+      <td class="label">Google Meet Link</td>
+      <td>{{googleMeetLink}}</td>
     </tr>
+
+    <tr>
+      <td class="label">Intended Participants</td>
+      <td colspan="3">{{intendedParticipants}}</td>
+    </tr>
+
+    <tr>
+      <td class="label">No. of Students Present</td>
+      <td>{{participants}}</td>
+      <td class="label">No. of Faculty Present</td>
+      <td>{{facultyCount}}</td>
+    </tr>
+
+    <tr>
+      <td class="label">Category of Event</td>
+      <td colspan="3">{{categoryOfEvent}}</td>
+    </tr>
+   
+
+    <!-- Summary Content -->
+
+    <tr>
+  <td colspan="4" class="summary-heading">
+    Summary<br />
+    (Provide in detail report of session progress)
+  </td>
+</tr>
+
+<tr>
+  <td colspan="4" class="summary-content-cell">
+    <div class="summary-content">
+      {{sessionSummary}}
+    </div>
+  </td>
+</tr>
+
   </tbody>
 </table>
 
 <div class="page-break"></div>
 
-<!-- ====================== PAGE :7  ATTENDANCE ====================== -->
-
-<pre>
-
-
-
-</pre>
+<!-- ====================== ATTENDANCE ====================== -->
 
 <h2 class="section-title">ATTENDANCE</h2>
-
-<!-- Multiple attendance pages injected from backend -->
 {{attendancePages}}
 
-
 <div class="page-break"></div>
 
-
-
-<!-- ====================== PAGE 8 : PHOTOS ====================== -->
-
-<pre>
-
-
-  
-
-</pre>
+<!-- ====================== PHOTOS ====================== -->
 
 <h2 class="section-title">PHOTOS</h2>
-
 {{photoPages}}
-
 
 <div class="page-break"></div>
 
+<!-- ====================== FEEDBACK ====================== -->
 
-<!-- ====================== PAGE 9 : FEEDBACK ====================== -->
-
-<pre>
-
-
-  
-
-</pre>
 <h2 class="section-title">FEEDBACK</h2>
 {{feedbackPages}}
 
