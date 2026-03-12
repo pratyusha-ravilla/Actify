@@ -1,3 +1,7 @@
+
+
+//server//src/models/Events.js
+
 import mongoose from "mongoose";
 
 /* ================= REGISTRATION SUB-SCHEMA ================= */
@@ -8,16 +12,18 @@ const registrationSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     registeredAt: {
       type: Date,
       default: Date.now,
     },
+
     attendanceMarked: {
       type: Boolean,
       default: false,
     },
   },
-  { _id: false },
+  { _id: false }
 );
 
 /* ================= EVENT SCHEMA ================= */
@@ -39,17 +45,17 @@ const eventSchema = new mongoose.Schema(
       required: true,
     },
 
-   eventType: {
-  type: String,
-  enum: ["expert talk", "conducted", "attended", "Others"],
-  required: true,
-},
+    eventType: {
+      type: String,
+      enum: ["expert talk", "conducted", "attended", "others"],
+      required: true,
+      lowercase:true
+    },
 
-
-
-    // ✅ Add this new field
+    // Only used when eventType = "others"
     customEventType: {
       type: String,
+      trim: true,
     },
 
     startDate: {
@@ -76,18 +82,10 @@ const eventSchema = new mongoose.Schema(
       default: "open",
     },
 
-    //approval event
-
     approvalStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
-    },
-
-    status: {
-      type: String,
-      enum: ["open", "closed"],
-      default: "open",
     },
 
     approvedBy: {
@@ -95,9 +93,11 @@ const eventSchema = new mongoose.Schema(
       ref: "User",
     },
 
-    approvedAt: Date,
+    approvedAt: {
+      type: Date,
+    },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Event", eventSchema);

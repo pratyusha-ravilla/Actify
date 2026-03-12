@@ -1,3 +1,5 @@
+
+
 // client/src/pages/Faculty/CreateEvent.jsx
 
 import React, { useState } from "react";
@@ -190,30 +192,7 @@ export default function CreateEvent() {
             required
           />
 
-          {/* <TextField
-            select
-            label="Event Type"
-            value={eventType}
-            onChange={(e) => setEventType(e.target.value)}
-            fullWidth
-            required
-          >
-            {eventType === "Others" && (
-              <TextField
-                label="Specify Event Type"
-                value={customEventType}
-                onChange={(e) => setCustomEventType(e.target.value)}
-                fullWidth
-                required
-              />
-            )}
-
-            {["Expert Talk", "Conducted", "Attended", "Others"].map((type) => (
-              <MenuItem key={type} value={type}>
-                {type}
-              </MenuItem>
-            ))}
-          </TextField> */}
+          
           <TextField
             select
             label="Event Type"

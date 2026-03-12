@@ -49,13 +49,20 @@ import {
 } from "@mui/icons-material";
 
 
-
-
 import StatCard from "../../components/StatCard.jsx";
 import EventItem from "../../components/EventItem.jsx";
 import SummaryCard from "../../components/SummaryCard.jsx";
 
 
+import { LinearProgress } from "@mui/material";
+//access denied
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from "@mui/material";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
 //event registration
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -64,12 +71,7 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 
 
-
-
 const drawerWidth = 260;
-
-
-
 
 
 const typeOptions = [
@@ -106,23 +108,46 @@ export default function FacultyDashboard() {
 
   //event registration
   const [eventsOpen, setEventsOpen] = useState(true);
+   
+  const [events, setEvents] = useState([]);
+
+  //access Denied
+const [accessDeniedOpen, setAccessDeniedOpen] = useState(false);
+
+
+  // useEffect(() => {
+  //   const load = async () => {
+  //     try {
+  //       const res = await axiosClient.get("/activity/mine");
+  //       setReports(res.data || []);
+  //     } catch {
+  //       setReports([]);
+  //     }
+  //     setLoading(false);
+  //   };
+  //   load();
+
+ 
+  // }, []);
 
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await axiosClient.get("/activity/mine");
-        setReports(res.data || []);
-      } catch {
-        setReports([]);
-      }
-      setLoading(false);
-    };
-    load();
+  const load = async () => {
+    try {
+      const reportsRes = await axiosClient.get("/activity/mine");
+      setReports(reportsRes.data || []);
 
- 
-  }, []);
+      const eventsRes = await axiosClient.get("/events/open");
+      setEvents(eventsRes.data || []);
+    } catch (err) {
+      console.error(err);
+    }
 
+    setLoading(false);
+  };
+
+  load();
+}, []);
 
 
   const stats = useMemo(() => {
@@ -136,13 +161,17 @@ export default function FacultyDashboard() {
     };
   }, [reports]);
 
-  const upcoming = useMemo(() => {
-    const now = new Date();
-    return reports
-      .filter((r) => r.date && new Date(r.date) >= now)
-      .sort((a, b) => new Date(a.date) - new Date(b.date))
-      .slice(0, 6);
-  }, [reports]);
+const upcoming = useMemo(() => {
+  const now = new Date();
+
+  return events
+    .filter((ev) => new Date(ev.startDate) >= now)
+    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+    .slice(0, 6);
+
+}, [events]);
+
+console.log("EVENTS:", events);
 
   const filtered = useMemo(() => {
     let data = [...reports];
@@ -177,7 +206,13 @@ export default function FacultyDashboard() {
   }, [reports, query, typeFilter, statusFilter, sortBy, sortDir]);
 
 
-  
+  //access denied
+  const handleRestrictedClick = (e) => {
+  e.preventDefault();
+  setAccessDeniedOpen(true);
+};
+
+  //user profile 
   const drawerContent = (
   <Box sx={{ height: "100%", display: "flex", flexDirection: "column", color: "white" }}>
 
@@ -196,26 +231,9 @@ export default function FacultyDashboard() {
     <Divider sx={{ borderColor: "rgba(255,255,255,0.2)" }} />
 
 
-{/* //event  */}
 
-{/* <ListItem
-  component={Link}
-  to="/faculty/events"
-  sx={{
-    color: "#f5f3ff",
-    "&:hover": {
-      background: "rgba(255,255,255,0.15)"
-    }
-  }}
->
-  <ListItemIcon sx={{ color: "inherit" }}>
-    <EventIcon />
-  </ListItemIcon>
-  <ListItemText
-    primary="Register for Event"
-    primaryTypographyProps={{ fontWeight: 600 }}
-  />
-</ListItem> */}
+
+
 
 {/* EVENTS SECTION */}
 <Divider sx={{ borderColor: "rgba(255,255,255,0.15)" }} />
@@ -317,34 +335,6 @@ export default function FacultyDashboard() {
 
 
 
-
-
- 
-{/* MAIN MENU */}
-<List>
-  <ListItem
-    component={Link}
-    to="/faculty/mine"
-    sx={{
-      color: "#f5f3ff",
-      "&:hover": {
-        background: "rgba(255,255,255,0.15)",
-        color: "#ffffff"
-      }
-    }}
-  >
-    <ListItemIcon sx={{ color: "inherit" }}>
-      <BookIcon />
-    </ListItemIcon>
-    <ListItemText
-      primary="My Reports"
-      primaryTypographyProps={{ fontWeight: 600 }}
-    />
-  </ListItem>
-
-</List>
-
-
     {/* OTHER LINKS */}
 
   <Divider sx={{ borderColor: "rgba(255,255,255,0.15)" }} />
@@ -374,6 +364,7 @@ export default function FacultyDashboard() {
       key={item.label}
       component={Link}
       to={item.link}
+      onClick={handleRestrictedClick}
       sx={{
         color: "#f5f3ff",
         "&:hover": {
@@ -385,6 +376,7 @@ export default function FacultyDashboard() {
       <ListItemIcon sx={{ color: "inherit" }}>
         {item.icon}
       </ListItemIcon>
+
       <ListItemText
         primary={item.label}
         primaryTypographyProps={{ fontWeight: 600 }}
@@ -392,9 +384,6 @@ export default function FacultyDashboard() {
     </ListItem>
   ))}
 </List>
-
-
-
 
 
     {/* FOOTER LOGOUT */}
@@ -417,24 +406,56 @@ export default function FacultyDashboard() {
 );
 
 
+
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
       {/* ░░ TOP BAR ░░ */}
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` }
-        }}
-      >
-        <Toolbar>
-          <Typography variant="h6">Faculty Dashboard</Typography>
-        </Toolbar>
-      </AppBar>
+  
 
 
+<AppBar
+  position="fixed"
+  sx={{
+    width: { md: `calc(100% - ${drawerWidth}px)` },
+    ml: { md: `${drawerWidth}px` },
+    bgcolor: "#ffffff",
+    color: "#4c1d95",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+  }}
+>
+  <Toolbar>
+
+    {/* Mobile Menu */}
+    <IconButton
+      color="inherit"
+      sx={{ display: { md: "none" }, mr: 2 }}
+      onClick={() => setMobileOpen(true)}
+    >
+      <MenuIcon />
+    </IconButton>
+
+    <Typography variant="h5" sx={{ fontWeight: 800, flexGrow: 1 }}>
+      Faculty Dashboard
+    </Typography>
+
+    <Paper
+      sx={{
+        px: 2,
+        py: 1,
+        borderRadius: 3,
+        background: "#F5F3FF",
+      }}
+    >
+      <Typography variant="body2">
+        {user?.name}
+      </Typography>
+    </Paper>
+
+  </Toolbar>
+</AppBar>
 
       {/* ░░ SIDE DRAWER ░░ */}
      <Drawer
@@ -462,7 +483,8 @@ export default function FacultyDashboard() {
           flexGrow: 1,
           p: 4,
           pt: "90px",
-          bgcolor: "#f4f5fa",
+          // bgcolor: "4f5fa#f",
+          bgcolor: "#f8fafc",
           minHeight: "100vh"
         }}
       >
@@ -566,31 +588,126 @@ export default function FacultyDashboard() {
 </Grid>
 
           {/* ---------------- Row 2: Upcoming Events ---------------- */}
-          <Grid size={12}>
-            <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3, background: "linear-gradient(180deg,#ffffff,#fafafa)" }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
-                Upcoming Events
+         
+
+  <Grid size={12}>
+  <Paper
+    sx={{
+      p: 4,
+      borderRadius: 3,
+      boxShadow: 3,
+      background: "linear-gradient(180deg,#ffffff,#fafafa)"
+    }}
+  >
+    <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>
+      Upcoming Events
+    </Typography>
+
+    <Grid container spacing={3}>
+      {upcoming.length === 0 && (
+        <Typography sx={{ color: "gray", ml: 2 }}>
+          No upcoming events available
+        </Typography>
+      )}
+
+      {upcoming.map((ev) => {
+
+        const diff =
+          Math.ceil(
+            (new Date(ev.startDate) - new Date()) /
+              (1000 * 60 * 60 * 24)
+          );
+
+        return (
+          <Grid key={ev._id} size={{ xs: 12, md: 6, lg: 2 }}>
+            <Paper
+              sx={{
+                p: 3,
+                borderRadius: 3,
+                border: "1px solid #ede9fe",
+                transition: "all 0.3s",
+                background: "#faf5ff",
+
+                "&:hover": {
+                  transform: "translateY(-6px)",
+                  boxShadow: "0 12px 30px rgba(124,58,237,0.25)"
+                }
+              }}
+            >
+
+              <Typography
+                sx={{
+                  fontWeight: 800,
+                  fontSize: 18,
+                  color: "#4c1d95"
+                }}
+              >
+                {ev.title}
               </Typography>
 
-              <Stack spacing={2}>
-                {upcoming.length === 0 && (
-                  <Typography sx={{ color: "gray" }}>
-                    No upcoming events found.
-                  </Typography>
-                )}
+              <Typography sx={{ mt: 1, color: "#6b7280" }}>
+                {ev.eventType} • {ev.department}
+              </Typography>
 
-                {upcoming.map((ev) => (
-                  <EventItem
-                    key={ev._id}
-                    title={ev.activityName}
-                    date={ev.date}
-                    status={ev.status}
-                    type={ev.reportType}
-                  />
-                ))}
-              </Stack>
+              <Typography sx={{ mt: 1 }}>
+                📅 {new Date(ev.startDate).toDateString()}
+              </Typography>
+
+              <Typography
+                sx={{
+                  mt: 1,
+                  fontWeight: 700,
+                  color: "#7c3aed"
+                }}
+              >
+                ⏳ {diff > 0 ? `${diff} days remaining` : "Started"}
+              </Typography>
+
+              {/* <Chip
+                label={ev.approvalStatus}
+                size="small"
+                sx={{
+                  mt: 2,
+                  background:
+                    ev.approvalStatus === "approved"
+                      ? "#dcfce7"
+                      : "#fef3c7",
+                  color:
+                    ev.approvalStatus === "approved"
+                      ? "#166534"
+                      : "#92400e",
+                  fontWeight: 600
+                }}
+              /> */}
+
+
+<Button
+  variant="contained"
+  size="small"
+  sx={{
+    mt: 2,
+    textTransform: "none",
+    fontWeight: 700,
+    borderRadius: 1,
+    mx: "auto",
+    display: "block",
+    px: 4,
+    background:
+      "linear-gradient(90deg, rgba(76,29,149,1) 0%, rgba(124,58,237,1) 100%)"
+  }}
+  onClick={() => navigate("/faculty/events/register")}
+>
+  View Event
+</Button>
+
+
             </Paper>
           </Grid>
+        );
+      })}
+    </Grid>
+  </Paper>
+</Grid>
 
           {/* ---------------- Row 3: Reports Table ---------------- */}
           <Grid size={12}>
@@ -643,11 +760,11 @@ export default function FacultyDashboard() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ fontWeight: 700 }}>Activity</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>Action</TableCell>
+                      <TableCell sx={{ fontWeight: 1000,color:"#4c1d95" }}>Activity</TableCell>
+                      <TableCell sx={{ fontWeight: 1000,color:"#4c1d95" }}>Type</TableCell>
+                      <TableCell sx={{ fontWeight: 1000,color:"#4c1d95"}}>Date</TableCell>
+                      <TableCell sx={{ fontWeight: 1000,color:"#4c1d95" }}>Status</TableCell>
+                      <TableCell sx={{ fontWeight: 1000,color:"#4c1d95" }}>Action</TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -667,7 +784,7 @@ export default function FacultyDashboard() {
                             <TableCell>{r.reportType}</TableCell>
                             <TableCell>{r.date}</TableCell>
                             <TableCell>
-                              <Chip
+                              {/* <Chip
                                 label={r.status}
                                 color={
                                   r.status === "approved"
@@ -676,23 +793,46 @@ export default function FacultyDashboard() {
                                     ? "warning"
                                     : "error"
                                 }
-                              />
+                              /> */}
+
+
+                              <Chip
+  label={r.status}
+  size="small"
+  sx={{
+    textTransform: "capitalize",
+    fontWeight: 600,
+    background:
+      r.status === "approved"
+        ? "rgba(34,197,94,0.15)"
+        : r.status === "pending"
+        ? "rgba(245,158,11,0.15)"
+        : "rgba(239,68,68,0.15)",
+    color:
+      r.status === "approved"
+        ? "#16a34a"
+        : r.status === "pending"
+        ? "#d97706"
+        : "#dc2626",
+    borderRadius: "20px",
+    px: 1.5,
+  }}
+/>
                             </TableCell>
 
 
-                            {/* <TableCell>
-                              <Link
-                                to={`/faculty/report/${r._id}`}
-                                style={{ color: "#6d28d9", fontWeight: 700 }}
-                              >
-                                View
-                              </Link>
-                            </TableCell> */}
+                           
      <TableCell>
   <Stack direction="row" spacing={1}>
     <Button
-      size="small"
-      variant="outlined"
+       size="medium"
+  variant="outlined"
+  sx={{
+    borderRadius: "10px",
+    textTransform: "none",
+    fontWeight: 1000,
+    
+  }}
       onClick={() => navigate(`/faculty/report/${r._id}`)}
     >
       View
@@ -700,8 +840,14 @@ export default function FacultyDashboard() {
 
     {r.status === "pending" && (
       <Button
-        size="small"
-        variant="contained"
+        size="medium"
+  variant="contained"
+  sx={{
+    borderRadius: "10px",
+    textTransform: "none",
+    fontWeight: 1000,
+    background: "linear-gradient(135deg,#7C3AED,#5B21B6)"
+  }}
         onClick={() => navigate(`/faculty/report/${r._id}/edit`)}
       >
         Edit
@@ -709,9 +855,6 @@ export default function FacultyDashboard() {
     )}
   </Stack>
 </TableCell>
-
-
-
 
                           </TableRow>
                         ))}
@@ -743,92 +886,128 @@ export default function FacultyDashboard() {
 
        
 
-          {/* ---------------- Row 5: Usage Tips ---------------- */}
-          <Grid size={12}>
-            <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
-                Usage Tips
-              </Typography>
-              <ul style={{ margin: 0, paddingLeft: "20px", color: "#444" }}>
-                <li>Submit FDP / Event / Expert Talk reports easily</li>
-                <li>Track approval status in real time</li>
-                <li>Download your reports in PDF & DOCX formats</li>
-                <li>Check upcoming events and deadlines</li>
-              </ul>
-            </Paper>
-          </Grid>
 
-          {/* ---------------- Row 6: Highlights ---------------- */}
-          <Grid size={12}>
-            <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
-                Highlights
-              </Typography>
 
-              <Stack direction="row" spacing={4} sx={{ mt: 2 }}>
-                <Box>
-                  <Typography variant="subtitle2">Total Reports</Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                    {stats.total}
-                  </Typography>
-                </Box>
+{/* ---------------- Row 5: Faculty Guide ---------------- */}
+<Grid size={12}>
+  <Paper
+    sx={{
+      p: 3,
+      borderRadius: 4,
+      background: "#ffffff",
+      border: "1px solid #e5e7eb",
+      boxShadow: "0 6px 20px rgba(0,0,0,0.05)"
+    }}
+  >
+    <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
+      Faculty Guide
+    </Typography>
 
-                <Box>
-                  <Typography variant="subtitle2">Pending Reports</Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                    {stats.pending}
-                  </Typography>
-                </Box>
+    <ul style={{ margin: 0, paddingLeft: "20px", color: "#444", lineHeight: 1.8 }}>
+      <li>Create reports for FDPs, Workshops, Conferences, and Expert Talks.</li>
+      <li>Upload invitation posters, attendance sheets, photos, and feedback.</li>
+      <li>Edit reports while they are in <b>Pending</b> status.</li>
+      <li>Track approvals from HOD / Admin in real time.</li>
+      <li>Generate official documentation instantly in <b>PDF or DOCX format</b>.</li>
+      <li>Use event registration to participate in upcoming faculty activities.</li>
+    </ul>
+  </Paper>
+</Grid>
 
-                <Box>
-                  <Typography variant="subtitle2">Recently Approved</Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                    {stats.approved}
-                  </Typography>
-                </Box>
-              </Stack>
-            </Paper>
-          </Grid>
 
-          {/* ---------------- Row 7: CTA Panel ---------------- */}
-          <Grid size={12}>
-            <Paper
-              sx={{
-                p: 4,
-                borderRadius: 3,
-                boxShadow: 3,
-                textAlign: "center"
-              }}
-            >
-              <Typography variant="h5" sx={{ fontWeight: 800 }}>
-                Start Your Activity Report Now
-              </Typography>
+{/* ---------------- Row 6: Activity Insights ---------------- */}
+<Grid size={12}>
+  <Paper
+    sx={{
+      p: 3,
+      borderRadius: 4,
+      background: "#ffffff",
+      border: "1px solid #e5e7eb",
+      boxShadow: "0 6px 20px rgba(0,0,0,0.05)"
+    }}
+  >
+    <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
+      Activity Insights
+    </Typography>
 
-              <Typography sx={{ mt: 1, color: "gray" }}>
-                Document your FDP / Event / Expert Talk in a few clicks.
-              </Typography>
+    <Stack
+      direction={{ xs: "column", md: "row" }}
+      spacing={6}
+      sx={{ mt: 2 }}
+    >
+      <Box>
+        <Typography variant="subtitle2" sx={{ color: "#6b7280" }}>
+          Total Activities Submitted
+        </Typography>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: "#4c1d95" }}>
+          {stats.total}
+        </Typography>
+      </Box>
 
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => navigate("/faculty/create")}
-                sx={{
-                  mt: 3,
-                  px: 5,
-                  py: 1.5,
-                  background:
-                    "linear-gradient(90deg, rgba(76,29,149,1) 0%, rgba(124,58,237,1) 100%)",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  borderRadius: 3
-                }}
-              >
-                Create Report
-              </Button>
-            </Paper>
-          </Grid>
+      <Box>
+        <Typography variant="subtitle2" sx={{ color: "#6b7280" }}>
+          Awaiting Approval
+        </Typography>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: "#f59e0b" }}>
+          {stats.pending}
+        </Typography>
+      </Box>
+
+      <Box>
+        <Typography variant="subtitle2" sx={{ color: "#6b7280" }}>
+          Successfully Approved
+        </Typography>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: "#16a34a" }}>
+          {stats.approved}
+        </Typography>
+      </Box>
+
+      <Box>
+        <Typography variant="subtitle2" sx={{ color: "#6b7280" }}>
+          Expert Talks Conducted
+        </Typography>
+        <Typography variant="h4" sx={{ fontWeight: 800, color: "#7c3aed" }}>
+          {stats.talks}
+        </Typography>
+      </Box>
+    </Stack>
+  </Paper>
+</Grid>
+
+             
         </Grid>
       </Box>
+      <Dialog
+  open={accessDeniedOpen}
+  onClose={() => setAccessDeniedOpen(false)}
+>
+  <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+  <WarningAmberIcon color="warning" />
+  Access Restricted
+</DialogTitle>
+
+  <DialogContent>
+    <Typography>
+      You are not allowed to create this type of report.
+      Please contact the administrator if you believe this is a mistake.
+    </Typography>
+  </DialogContent>
+
+  <DialogActions>
+    <Button
+      onClick={() => setAccessDeniedOpen(false)}
+      variant="contained"
+      sx={{
+        background: "linear-gradient(135deg,#7C3AED,#5B21B6)",
+        textTransform: "none"
+      }}
+    >
+      OK
+    </Button>
+  </DialogActions>
+</Dialog>
     </Box>
+
+    
   );
 }

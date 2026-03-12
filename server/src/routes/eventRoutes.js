@@ -1,12 +1,9 @@
+
+
 //server/src/routes/eventRoutes.js
 
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-// import {
-//   getOpenEvents,
-//   registerForEvent,
-//   myRegistrations,
-// } from "../controllers/eventController.js";
 
 import {
   getOpenEvents,

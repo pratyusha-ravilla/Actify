@@ -1,3 +1,7 @@
+
+
+//server/src/models/EventRegistration.js
+
 import mongoose from "mongoose";
 
 const eventRegistrationSchema = new mongoose.Schema(

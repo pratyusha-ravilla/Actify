@@ -13,6 +13,9 @@ import adminRoutes from "./routes/adminRoutes.js";
 
 import notificationRoutes from "./routes/notificationRoutes.js";
 
+import "../src/jobs/eventRemainderJob.js";
+import "../src/jobs/reportRemainderJob.js";
+
 dotenv.config();
 
 // Fix __dirname for ES modules
@@ -75,3 +78,7 @@ app.get("/", (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Server running on http://localhost:${process.env.PORT}`);
 });
+
+//trail 
+console.log("EMAIL USER:", process.env.EMAIL_USER);
+console.log("EMAIL PASS:", process.env.EMAIL_PASS);

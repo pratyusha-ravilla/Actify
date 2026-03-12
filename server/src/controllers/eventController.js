@@ -1,8 +1,13 @@
+
 //server/src/controllers/eventController.js
 
 import Event from "../models/Event.js";
 
 import Notification from "../models/Notification.js";
+
+
+//email notification
+import { sendEmail } from "../utils/emailService.js";
 
 /**
  * GET /api/events/open
@@ -83,15 +88,48 @@ export const createEvent = async (req, res) => {
  * Faculty registers for an event
  */
 
+// export const registerForEvent = async (req, res) => {
+//   try {
+//     const event = await Event.findById(req.params.id);
+//     if (!event) {
+//       return res.status(404).json({ message: "Event not found" });
+//     }
+
+//     const alreadyRegistered = event.registrations.some(
+//       (r) => r.faculty.toString() === req.user._id.toString(),
+//     );
+
+//     if (alreadyRegistered) {
+//       return res.status(400).json({ message: "Already registered" });
+//     }
+
+//     event.registrations.push({
+//       faculty: req.user._id,
+//     });
+
+//     await event.save();
+
+//     res.json({ message: "Registered successfully" });
+//   } catch (err) {
+//     res.status(500).json({ message: "Registration failed" });
+//   }
+// };
+
 export const registerForEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
+
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
 
+    // Ensure registrations array exists
+    if (!event.registrations) {
+      event.registrations = [];
+    }
+
     const alreadyRegistered = event.registrations.some(
-      (r) => r.faculty.toString() === req.user._id.toString(),
+      (r) => String(r.faculty) === String(req.user._id)
     );
 
     if (alreadyRegistered) {
@@ -104,11 +142,70 @@ export const registerForEvent = async (req, res) => {
 
     await event.save();
 
+
+    console.log("Sending email to:", req.user.email);
+     // ✅ SEND EMAIL HERE
+    
+    const html = `
+<div style="font-family: Arial; padding:20px">
+
+  <h2 style="color:#4c1d95;">Actify Event Registration</h2>
+
+  <p>Dear ${req.user.name},</p>
+
+  <p>You have successfully registered for the following event:</p>
+
+  <table style="border-collapse: collapse;">
+    <tr>
+      <td><b>Event:</b></td>
+      <td>${event.title}</td>
+    </tr>
+    <tr>
+      <td><b>Department:</b></td>
+      <td>${event.department}</td>
+    </tr>
+    <tr>
+      <td><b>Date:</b></td>
+      <td>${new Date(event.startDate).toDateString()}</td>
+    </tr>
+  </table>
+
+  <p style="margin-top:15px">
+  Please attend the event and remember to submit your report after completion.
+  </p>
+
+  <hr/>
+
+  <p style="color:#7c3aed;font-weight:bold">
+  Actify System
+  </p>
+
+</div>
+`;
+
+await sendEmail(
+  req.user.email,
+  "Actify: Event Registration Confirmed",
+  html
+);
+    
+
+
+await sendEmail(
+  req.user.email,
+  "Actify: Event Registration Confirmed",
+  html
+);
+
+
     res.json({ message: "Registered successfully" });
+
   } catch (err) {
+    console.error("REGISTER ERROR:", err);
     res.status(500).json({ message: "Registration failed" });
   }
 };
+
 
 /**
  * GET /api/events/my-registrations

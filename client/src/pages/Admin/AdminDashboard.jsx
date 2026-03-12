@@ -94,9 +94,6 @@ const slideFadeIn = keyframes`
 `;
 
 
-
-
-
 /* ============================================================
                        ADMIN DASHBOARD
 ============================================================ */
@@ -282,19 +279,6 @@ useEffect(() => {
 const [selectedNotification, setSelectedNotification] = useState(null);
 
 
-// const markAsRead = async (id) => {
-//   try {
-//     await axiosClient.put(`/admin/notifications/${id}/read`);
-
-//     setNotifications((prev) =>
-//       prev.map((n) =>
-//         n._id === id ? { ...n, isRead: true } : n
-//       )
-//     );
-//   } catch (err) {
-//     console.error("Mark as read failed", err);
-//   }
-// };
 
 
 const markAsRead = async (id) => {
