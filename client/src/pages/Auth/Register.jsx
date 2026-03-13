@@ -1,4 +1,6 @@
-// // //client/src/pages/Auth/Register.jsx
+
+
+//client/src/pages/Auth/Register.jsx
 import React, { useState } from "react";
 import axiosClient from "../../utils/axiosClient";
 import { useNavigate, Link } from "react-router-dom";
@@ -51,14 +53,7 @@ export default function Register() {
           </div>
 
           <div className="form-group">
-            {/* <input
-              type="email"
-              placeholder=" "
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              required
-            />
-            <label>Email</label> */}
+           
             <input
               type="email"
               placeholder=" "

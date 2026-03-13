@@ -108,163 +108,6 @@ console.log("EVENT CREATED BY:", events[0]?.createdBy);
 
   };
 
-//   return (
-//     <Box className="register-events-page">
-
-//       {/* ================= HEADER ================= */}
-//       <Paper className="register-header">
-//         <Typography className="register-title">
-//           Event Registration 🎓
-//         </Typography>
-//         <Typography className="register-subtitle">
-//           Register for FDPs, workshops, expert talks and conferences
-//         </Typography>
-//       </Paper>
-
-//       {/* ================= STATS ================= */}
-//       <Grid container spacing={3} className="stats-bar">
-//         <Grid item xs={12} md={4}>
-//           <Paper className="stat-tile">
-//             <Typography className="stat-value">{events.length}</Typography>
-//             <Typography className="stat-label">Open Events</Typography>
-//           </Paper>
-//         </Grid>
-
-//         <Grid item xs={12} md={4}>
-//           <Paper className="stat-tile accent">
-//             <Typography className="stat-value">Auto</Typography>
-//             <Typography className="stat-label">
-//               Registered Events
-//             </Typography>
-//           </Paper>
-//         </Grid>
-
-//         <Grid item xs={12} md={4}>
-//           <Paper className="stat-tile soft">
-//             <Typography className="stat-value">✔</Typography>
-//             <Typography className="stat-label">
-//               Attendance Trackable
-//             </Typography>
-//           </Paper>
-//         </Grid>
-//       </Grid>
-
-//       {/* ================= INFO ================= */}
-//       <Paper className="info-panel">
-//         <Stack direction="row" spacing={2} alignItems="center">
-//           <InfoOutlinedIcon color="secondary" />
-//           <Typography className="info-text">
-//             Once registered, the event will appear in your dashboard. You can
-//             later generate reports and track attendance from registered events.
-//           </Typography>
-//         </Stack>
-//       </Paper>
-
-//       {/* ================= EVENTS ================= */}
-//       {loading && (
-//         <Typography sx={{ textAlign: "center", mt: 4 }}>
-//           Loading events...
-//         </Typography>
-//       )}
-
-//       <Grid container spacing={4} sx={{ mt: 1 }}>
-//         {!loading && events.length === 0 && (
-//           <Typography className="empty-text">
-//             No open events available right now
-//           </Typography>
-//         )}
-
-//         {events.map((ev) => (
-//           <Grid key={ev._id} item xs={12} md={6}>
-//             <Paper className="event-card">
-//               <div className="event-accent" />
-
-//               <Stack spacing={1.5}>
-//                 <Typography className="event-title">
-//                   {ev.title}
-//                 </Typography>
-
-//                 <Typography className="event-description">
-//                   {ev.description || "No description provided"}
-//                 </Typography>
-
-//                 <Divider />
-
-//                 <Stack direction="row" spacing={1} flexWrap="wrap">
-//                   <Chip
-//                     icon={<CategoryIcon />}
-//                     label={ev.eventType}
-//                     size="small"
-//                     color="secondary"
-//                   />
-
-//                   <Chip
-//                     icon={<BusinessIcon />}
-//                     label={ev.department}
-//                     size="small"
-//                     variant="outlined"
-//                   />
-
-//                   <Chip
-//                     icon={<EventAvailableIcon />}
-//                     label={`${new Date(ev.startDate).toDateString()} → ${new Date(
-//                       ev.endDate
-//                     ).toDateString()}`}
-//                     size="small"
-//                     color="primary"
-//                   />
-//                 </Stack>
-
-//                 {/* ACTION BUTTONS */}
-//                 <Stack direction="row" spacing={2}>
-                
-
-//                 <Button
-//   startIcon={<HowToRegIcon />}
-//   className="register-btn"
-//   disabled={
-//     ev.approvalStatus !== "approved" ||
-//     registeringId === ev._id
-//   }
-//   onClick={() => register(ev._id)}
-// >
-//   {ev.approvalStatus !== "approved"
-//     ? "Awaiting Approval"
-//     : "Register for Event"}
-// </Button>
-
-
-
-
-
-//                   {/* DELETE – ONLY CREATOR */}
-// {/* DELETE – ONLY CREATOR */}
-// {user &&
-//   ev.createdBy &&
-//   String(user.id) === String(ev.createdBy._id) && (
-//     <Button
-//       color="error"
-//       variant="outlined"
-//       startIcon={<DeleteOutlineIcon />}
-//       onClick={() => deleteEvent(ev._id)}
-//       disabled={deletingId === ev._id}
-//     >
-//       {deletingId === ev._id ? "Deleting..." : "Delete"}
-
-//     </Button>
-    
-// )}
-
-
-//                 </Stack>
-//               </Stack>
-//             </Paper>
-//           </Grid>
-//         ))}
-//       </Grid>
-//     </Box>
-//   );
-
 
 return (
   <Box sx={{
@@ -383,7 +226,8 @@ return (
 
   return (
         <Grid key={ev._id} item xs={12} md={6} lg={4}>
-          <Paper
+          
+          {/* <Paper
             sx={{
               p: 3,
               borderRadius: 3,
@@ -400,7 +244,7 @@ return (
             }}
           >
 
-            {/* EVENT INFO */}
+          
             <Box>
               <Typography
                 sx={{
@@ -449,7 +293,7 @@ return (
                 />
 
 
-                {/* ⭐ EVENT COUNTDOWN */}
+               
 <Typography
   sx={{
     mt: 1,
@@ -480,7 +324,7 @@ return (
             </Box>
 
 
-            {/* ACTION BUTTONS */}
+            
             <Stack direction="row" spacing={2} mt={3}>
 
 
@@ -499,7 +343,7 @@ return (
     px: 3,
     color: "#fff",
 
-    // ⭐ Dynamic colors
+  
     background:
       isRegistered
         ? "#16a34a"
@@ -552,7 +396,157 @@ return (
 
             </Stack>
 
-          </Paper>
+          </Paper> */}
+
+
+<Paper
+  sx={{
+    p: 3,
+    borderRadius: 4,
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+
+    background: "#ffffff",
+    border: "1px solid #f1eaff",
+
+    transition: "all 0.3s ease",
+
+    "&:hover": {
+      transform: "translateY(-8px)",
+      boxShadow: "0 18px 35px rgba(124,58,237,0.18)"
+    }
+  }}
+>
+
+  {/* ===== EVENT TITLE ===== */}
+  <Box>
+
+    <Typography
+      sx={{
+        fontWeight: 800,
+        fontSize: 18,
+        color: "#4c1d95"
+      }}
+    >
+      {ev.title}
+    </Typography>
+
+    <Typography
+      sx={{
+        mt: 0.5,
+        fontSize: 14,
+        color: "#6b7280"
+      }}
+    >
+      {ev.description || "No description provided"}
+    </Typography>
+
+    {/* ===== EVENT INFO CHIPS ===== */}
+    <Stack
+      direction="row"
+      spacing={1}
+      flexWrap="wrap"
+      sx={{ mt: 2 }}
+    >
+      <Chip
+        icon={<CategoryIcon />}
+        label={ev.eventType}
+        size="small"
+        sx={{
+          background: "#f3e8ff",
+          color: "#6d28d9",
+          fontWeight: 600
+        }}
+      />
+
+      <Chip
+        icon={<BusinessIcon />}
+        label={ev.department}
+        size="small"
+        variant="outlined"
+      />
+
+      <Chip
+        icon={<EventAvailableIcon />}
+        label={new Date(ev.startDate).toDateString()}
+        size="small"
+      />
+    </Stack>
+
+    {/* ===== COUNTDOWN ===== */}
+    <Typography
+      sx={{
+        mt: 1.5,
+        fontSize: 13,
+        fontWeight: 700,
+        color: "#7c3aed"
+      }}
+    >
+      ⏳ {getCountdown(ev.startDate)}
+    </Typography>
+
+  </Box>
+
+  {/* ===== ACTION BUTTON ===== */}
+  <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+
+<Button
+  startIcon={<HowToRegIcon />}
+  disabled={
+    ev.approvalStatus !== "approved" ||
+    registeringId === ev._id ||
+    isRegistered
+  }
+  onClick={() => register(ev._id)}
+  sx={{
+    textTransform: "none",
+    fontWeight: 700,
+    borderRadius: "24px",
+    px: 4,
+    color: "#fff",
+
+    background:
+      isRegistered
+        ? "#16a34a"
+        : ev.approvalStatus !== "approved"
+        ? "#f59e0b"
+        : "linear-gradient(135deg,#7c3aed,#5b21b6)",
+
+    boxShadow:
+      isRegistered
+        ? "0 6px 18px rgba(22,163,74,0.4)"
+        : ev.approvalStatus !== "approved"
+        ? "0 6px 18px rgba(245,158,11,0.4)"
+        : "0 8px 20px rgba(124,58,237,0.35)",
+
+    "&:hover": {
+      background:
+        isRegistered
+          ? "#15803d"
+          : ev.approvalStatus !== "approved"
+          ? "#d97706"
+          : "linear-gradient(135deg,#6d28d9,#4c1d95)"
+    },
+
+    "&.Mui-disabled": {
+      opacity: 1,
+      color: "#fff"
+    }
+  }}
+>
+  {isRegistered
+    ? "Registered"
+    : ev.approvalStatus !== "approved"
+    ? "Awaiting Approval"
+    : "Register"}
+</Button>
+
+  </Box>
+
+</Paper>
+
         </Grid>
 
         

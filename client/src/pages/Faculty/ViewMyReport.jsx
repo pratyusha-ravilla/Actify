@@ -3,11 +3,19 @@
 // client/src/pages/Faculty/ViewMyReport.jsx
 
 import React, { useEffect, useState, useContext } from "react";
-import { Box, Paper, Typography, Button, Grid, Divider } from "@mui/material";
 import axiosClient from "../../utils/axiosClient";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./ViewMyReport.css";
+import { 
+  Box,
+  Paper,
+  Typography,
+  Button,
+  Grid,
+  Divider,
+  Stack
+} from "@mui/material";
 
 
 export default function ViewMyReport() {
@@ -18,7 +26,24 @@ export default function ViewMyReport() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const backend = "http://localhost:5002"; // ✅ FIXED
+ 
+const backend = axiosClient.defaults.baseURL.replace("/api", "");
+
+
+const getImageUrl = (path) => {
+  if (!path) return "";
+
+  const cleanPath = path.replace(/\\/g, "/");
+
+  // if uploads already exists
+  if (cleanPath.startsWith("uploads")) {
+    return `${backend}/${cleanPath}`;
+  }
+
+  return `${backend}/uploads/${cleanPath}`;
+};
+
+
 
   useEffect(() => {
     const load = async () => {
@@ -63,134 +88,263 @@ export default function ViewMyReport() {
         : images.map((img, i) => (
             <img
               key={i}
-              src={`${backend}/${img}`}
+             
+              src={`${backend}/${img?.replace(/\\/g, "/")}`}
               alt={`img-${i}`}
               style={{ width: 150, borderRadius: 6 }}
             />
           ))
       }
     </Box>
+    
   );
 
-  return (
-  <Box className="view-wrapper">
-    <Paper className="view-paper">
+  
 
-      {/* HEADER */}
-      <div className="view-header">
-        <div>
-          <Typography variant="h5" className="view-title">
-            {data.activityName}
-          </Typography>
-          <div className="view-subtitle">
-            {data.reportType} • {data.academicYear} • Status: {data.status}
-          </div>
-        </div>
 
-        <div className="view-actions">
-          <Button variant="outlined" onClick={() => downloadFile("pdf")}>⬇ PDF</Button>
-          <Button variant="outlined" onClick={() => downloadFile("docx")}>⬇ DOCX</Button>
+return (
+  <Box
+    sx={{
+      maxWidth: 1100,
+      margin: "30px auto",
+      px: 3
+    }}
+  >
 
-          {data.status === "pending" && (
-            <Link to={`/faculty/report/${id}/edit`}>
-              <Button variant="contained">Edit</Button>
-            </Link>
-          )}
+    {/* HEADER */}
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: 3,
+        mb: 3,
+        background: "linear-gradient(135deg,#7c3aed,#5b21b6)",
+        color: "#fff"
+      }}
+    >
+      <Typography variant="h4" sx={{ fontWeight: 700 }}>
+        {data.activityName}
+      </Typography>
 
-          <Button variant="text" onClick={() => navigate(-1)}>Back</Button>
-        </div>
-      </div>
+      <Typography sx={{ mt: 1 }}>
+        {data.reportType} • {data.academicYear}
+      </Typography>
 
-      {/* ACTIVITY DETAILS */}
-      <div className="view-section">
-        <h3>Activity Details</h3>
-        <div className="view-text"><b>Coordinator:</b> {data.coordinator || "-"}</div>
-        <div className="view-text"><b>Date:</b> {data.date || "-"}</div>
-        <div className="view-text"><b>Duration:</b> {data.duration || "-"}</div>
-        <div className="view-text"><b>PO & POs:</b> {data.poPos || "-"}</div>
-      </div>
+      <Typography sx={{ mt: 1 }}>
+        Status: <b>{data.status}</b>
+      </Typography>
 
-      {/* INVITATION */}
-      <div className="view-section">
-        <h3>Invitation</h3>
-        {data.invitation
-          ? <img src={`${backend}/${data.invitation}`} style={{ maxWidth: "100%" }} />
-          : <div className="empty-text">No invitation uploaded</div>}
-      </div>
+      <Box sx={{ mt: 2 }}>
+        <Button
+          variant="contained"
+          sx={{ mr: 2, background: "#fff", color: "#5b21b6" }}
+          onClick={() => downloadFile("pdf")}
+        >
+          Download PDF
+        </Button>
 
-      {/* POSTER */}
-      <div className="view-section">
-        <h3>Poster</h3>
-        {data.poster
-          ? <img src={`${backend}/${data.poster}`} style={{ maxWidth: "100%" }} />
-          : <div className="empty-text">No poster uploaded</div>}
-      </div>
+        {/* <Button
+          variant="outlined"
+          sx={{ mr: 2, borderColor: "#fff", color: "#fff" }}
+          onClick={() => downloadFile("docx")}
+        >
+          Download DOCX
+        </Button> */}
 
-      {/* RESOURCE PERSON */}
-      <div className="view-section">
-        <h3>Resource Person</h3>
-        <div className="view-text"><b>Name:</b> {data.resourcePerson?.name || "-"}</div>
-        <div className="view-text"><b>Designation:</b> {data.resourcePerson?.designation || "-"}</div>
-        <div className="view-text"><b>Institution:</b> {data.resourcePerson?.institution || "-"}</div>
-
-        {data.resourcePerson?.photo && (
-          <img
-            src={`${backend}/${data.resourcePerson.photo}`}
-            className="resource-photo"
-          />
+        {data.status === "pending" && (
+          <Link to={`/faculty/report/${id}/edit`}>
+            <Button variant="contained" sx={{ background: "#16a34a" }}>
+              Edit
+            </Button>
+          </Link>
         )}
-      </div>
 
-      {/* SESSION REPORT */}
-      <div className="view-section">
-        <h3>Session Report</h3>
-        <div className="view-text"><b>Session Name:</b> {data.sessionReport?.sessionName || "-"}</div>
-        <div className="view-text"><b>Coordinators:</b> {(data.sessionReport?.coordinators || []).join(", ")}</div>
-        <div className="view-text"><b>Category:</b> {data.sessionReport?.categoryOfEvent || "-"}</div>
-        <div className="view-text"><b>Summary:</b> {data.sessionReport?.summary || "-"}</div>
-        <div className="view-text"><b>Students:</b> {data.sessionReport?.participantsCount || 0}</div>
-        <div className="view-text"><b>Faculty:</b> {data.sessionReport?.facultyCount || 0}</div>
-      </div>
-
-      {/* ATTENDANCE */}
-      <div className="view-section">
-        <h3>Attendance Images</h3>
-        <div className="image-grid">
-          {(data.attendanceImages || []).length === 0
-            ? <div className="empty-text">No attendance images uploaded</div>
-            : data.attendanceImages.map((img, i) => (
-                <img key={i} src={`${backend}/${img}`} />
-              ))}
-        </div>
-      </div>
-
-      {/* EVENT PHOTOS */}
-      <div className="view-section">
-        <h3>Event Photos</h3>
-        <div className="image-grid">
-          {(data.photos || []).length === 0
-            ? <div className="empty-text">No photos uploaded</div>
-            : data.photos.map((img, i) => (
-                <img key={i} src={`${backend}/${img}`} />
-              ))}
-        </div>
-      </div>
-
-      {/* FEEDBACK */}
-      <div className="view-section">
-        <h3>Feedback</h3>
-        <div className="view-text">{data.feedback || "—"}</div>
-
-        <div className="image-grid">
-          {(data.feedbackImages || []).length === 0
-            ? <div className="empty-text">No feedback images</div>
-            : data.feedbackImages.map((img, i) => (
-                <img key={i} src={`${backend}/${img}`} />
-              ))}
-        </div>
-      </div>
-
+        <Button
+          variant="text"
+          sx={{ ml: 2, color: "#fff" }}
+          onClick={() => navigate(-1)}
+        >
+          Back
+        </Button>
+      </Box>
     </Paper>
+
+    {/* ACTIVITY DETAILS */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Activity Details</Typography>
+
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid item xs={12} md={6}>
+          <Typography><b>Coordinator:</b> {data.coordinator || "-"}</Typography>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Typography><b>Date:</b> {data.date || "-"}</Typography>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Typography><b>Duration:</b> {data.duration || "-"}</Typography>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Typography><b>PO & POs:</b> {data.poPos || "-"}</Typography>
+        </Grid>
+      </Grid>
+    </Paper>
+
+    {/* INVITATION */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Invitation</Typography>
+
+      {data.invitation ? (
+        <img
+          src={getImageUrl(data.invitation)}
+          style={{ width: "70%", borderRadius: 8, marginTop: 10 }}
+        />
+
+  
+      ) : (
+        <Typography color="text.secondary">
+          No invitation uploaded
+        </Typography>
+      )}
+    </Paper>
+
+    {/* POSTER */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Poster</Typography>
+
+      {data.poster ? (
+        <img
+         src={getImageUrl(data.poster)}
+          style={{ width: "70%", borderRadius: 8, marginTop: 10 }}
+        />
+
+    
+      ) : (
+        <Typography color="text.secondary">
+          No poster uploaded
+        </Typography>
+      )}
+    </Paper>
+
+    {/* RESOURCE PERSON */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Resource Person</Typography>
+
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid item xs={12} md={8}>
+          <Typography><b>Name:</b> {data.resourcePerson?.name || "-"}</Typography>
+          <Typography><b>Designation:</b> {data.resourcePerson?.designation || "-"}</Typography>
+          <Typography><b>Institution:</b> {data.resourcePerson?.institution || "-"}</Typography>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          {data.resourcePerson?.photo && (
+            <img
+              src={getImageUrl(data.resourcePerson?.photo)}
+              style={{ width: "70%", borderRadius: 8 }}
+            />
+          )}
+        </Grid>
+      </Grid>
+    </Paper>
+
+    {/* SESSION REPORT */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Session Report</Typography>
+
+      <Typography sx={{ mt: 1 }}>
+        <b>Session Name:</b> {data.sessionReport?.sessionName || "-"}
+      </Typography>
+
+      <Typography>
+        <b>Coordinators:</b>{" "}
+        {(data.sessionReport?.coordinators || []).join(", ")}
+      </Typography>
+
+      <Typography>
+        <b>Category:</b> {data.sessionReport?.categoryOfEvent || "-"}
+      </Typography>
+
+      <Typography sx={{ mt: 1 }}>
+        {data.sessionReport?.summary || "-"}
+      </Typography>
+
+      <Stack direction="row" spacing={4} sx={{ mt: 2 }}>
+        <Typography>
+          <b>Students:</b> {data.sessionReport?.participantsCount || 0}
+        </Typography>
+
+        <Typography>
+          <b>Faculty:</b> {data.sessionReport?.facultyCount || 0}
+        </Typography>
+      </Stack>
+    </Paper>
+
+    {/* ATTENDANCE */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Attendance Images</Typography>
+
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        {(data.attendanceImages || []).length === 0 ? (
+          <Typography>No attendance images uploaded</Typography>
+        ) : (
+          data.attendanceImages.map((img, i) => (
+            <Grid item xs={12} md={4} key={i}>
+              <img
+                src={getImageUrl(img)}
+                style={{ width: "70%", borderRadius: 8 }}
+              />
+            </Grid>
+          ))
+        )}
+      </Grid>
+    </Paper>
+
+    {/* EVENT PHOTOS */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Event Photos</Typography>
+
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        {(data.photos || []).length === 0 ? (
+          <Typography>No photos uploaded</Typography>
+        ) : (
+          data.photos.map((img, i) => (
+            <Grid item xs={12} md={4} key={i}>
+              <img
+                src={getImageUrl(img)}
+                style={{ width: "70%", borderRadius: 8 }}
+              />
+            </Grid>
+          ))
+        )}
+      </Grid>
+    </Paper>
+
+    {/* FEEDBACK */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Feedback</Typography>
+
+      <Typography sx={{ mt: 1 }}>
+        {data.feedback || "No feedback provided"}
+      </Typography>
+
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        {(data.feedbackImages || []).length === 0 ? (
+          <Typography>No feedback images</Typography>
+        ) : (
+          data.feedbackImages.map((img, i) => (
+            <Grid item xs={12} md={4} key={i}>
+              <img
+                src={getImageUrl(img)}
+                style={{ width: "70%", borderRadius: 8 }}
+              />
+            </Grid>
+          ))
+        )}
+      </Grid>
+    </Paper>
+
   </Box>
 );
 

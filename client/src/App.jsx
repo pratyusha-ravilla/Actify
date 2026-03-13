@@ -52,12 +52,7 @@ export default function App() {
         {/* new add-on*/}
 
         <Route path="/department/:code" element={<DepartmentReports />} />
-        {/* 
-  <Route
-  path="/faculty/events"
-  element={<RegisterEvents />}
-/> */}
-
+      
         {/* //event registration */}
 
         <Route path="/faculty/events/register" element={<RegisterEvents />} />

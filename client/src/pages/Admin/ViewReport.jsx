@@ -1,7 +1,22 @@
+
+//client/src/pages/Admin/ViewReport.jsx
+
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../utils/axiosClient";
 import { useParams, useNavigate } from "react-router-dom";
 import Loading from "../Shared/Loading";
+
+import {
+  Box,
+  Paper,
+  Typography,
+  Button,
+  Grid,
+  Chip,
+  Stack
+} from "@mui/material";
+
+import { Dialog } from "@mui/material";
 
 export default function ViewReport() {
   const { id } = useParams();
@@ -9,6 +24,9 @@ export default function ViewReport() {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [previewImage,setPreviewImage] = useState(null);
+
 
   const baseURL = axiosClient.defaults.baseURL.replace("/api", "");
 
@@ -43,70 +61,243 @@ export default function ViewReport() {
   if (loading) return <Loading />;
   if (!data) return <div>No data</div>;
 
-  return (
-    <div style={{ maxWidth: 1000, margin: "20px auto" }}>
-      <h2>{data.activityName}</h2>
-      <p>
-        <b>Type:</b> {data.reportType} |
-        <b> Status:</b> {data.status} |
-        <b> Date:</b> {data.date}
-      </p>
+ 
+return (
+  <Box
+    sx={{
+      maxWidth: 1100,
+      margin: "30px auto",
+      px: 3
+    }}
+  >
 
-      <div style={{ marginBottom: 12 }}>
-        <a href={`/api/activity/${id}/pdf`} target="_blank">Download PDF</a> |
-        <a href={`/api/activity/${id}/docx`} target="_blank">Download DOCX</a>
-      </div>
+    {/* HEADER */}
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: 3,
+        mb: 3,
+        background: "linear-gradient(135deg,#7c3aed,#5b21b6)",
+        color: "#fff"
+      }}
+    >
 
-      <h3>Coordinator</h3>
-      <p>{data.coordinator}</p>
+      
 
-      <h3>Invitation</h3>
+      <Typography variant="h4" sx={{ fontWeight: 700 }}>
+        {data.activityName}
+      </Typography>
+
+      <Stack direction="row" spacing={3} mt={1}>
+        <Chip label={data.reportType} sx={{ background: "#ede9fe" }} />
+        <Chip
+          label={data.status}
+          color={
+            data.status === "approved"
+              ? "success"
+              : data.status === "rejected"
+              ? "error"
+              : "warning"
+          }
+        />
+        <Typography>{data.date}</Typography>
+      </Stack>
+    </Paper>
+
+    
+
+    {/* DOWNLOAD BUTTONS */}
+    <Stack direction="row" spacing={2} mb={3}>
+      <Button
+        variant="contained"
+        href={`/api/activity/${id}/pdf`}
+        target="_blank"
+      >
+        Download PDF
+      </Button>
+
+      {/* <Button
+        variant="outlined"
+        href={`/api/activity/${id}/docx`}
+        target="_blank"
+      >
+        Download DOCX
+      </Button> */}
+    </Stack>
+
+    {/* COORDINATOR */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Coordinator</Typography>
+      <Typography>{data.coordinator}</Typography>
+    </Paper>
+
+    {/* INVITATION */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Invitation</Typography>
+
       {data.invitation ? (
-        <img src={`${baseURL}/${data.invitation}`} style={{ width: "100%" }} />
-      ) : <p>No invitation uploaded.</p>}
+        <img
+          src={`${baseURL}/${data.invitation}`}
+          style={{ width: "100%", borderRadius: 8 }}
+        />
+      ) : (
+        <Typography>No invitation uploaded</Typography>
+      )}
+    </Paper>
 
-      <h3>Poster</h3>
+    {/* POSTER */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Poster</Typography>
+
       {data.poster ? (
-        <img src={`${baseURL}/${data.poster}`} style={{ width: "100%" }} />
-      ) : <p>No poster uploaded.</p>}
+        <img
+          src={`${baseURL}/${data.poster}`}
+          style={{ width: "100%", borderRadius: 8 }}
+        />
+      ) : (
+        <Typography>No poster uploaded</Typography>
+      )}
+    </Paper>
 
-      <h3>Resource Person Details</h3>
-      <p><b>Name:</b> {data.resourcePerson?.name}</p>
-      <p><b>Designation:</b> {data.resourcePerson?.designation}</p>
-      <p><b>Institution:</b> {data.resourcePerson?.institution}</p>
-      {data.resourcePerson?.photo && (
-        <img src={`${baseURL}/${data.resourcePerson.photo}`} style={{ width: 150 }} />
+    {/* RESOURCE PERSON */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Resource Person</Typography>
+
+      <Grid container spacing={2} mt={1}>
+        <Grid item xs={12} md={8}>
+          <Typography>
+            <b>Name:</b> {data.resourcePerson?.name}
+          </Typography>
+          <Typography>
+            <b>Designation:</b> {data.resourcePerson?.designation}
+          </Typography>
+          <Typography>
+            <b>Institution:</b> {data.resourcePerson?.institution}
+          </Typography>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          {data.resourcePerson?.photo && (
+            <img
+              src={`${baseURL}/${data.resourcePerson.photo}`}
+              style={{ width: "100%", borderRadius: 8 }}
+            />
+          )}
+        </Grid>
+      </Grid>
+    </Paper>
+
+    {/* SESSION REPORT */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Session Report</Typography>
+
+      <Typography mt={1}>{data.sessionReport?.summary}</Typography>
+
+      <Stack direction="row" spacing={4} mt={2}>
+        <Typography>
+          <b>Students:</b> {data.sessionReport?.participantsCount}
+        </Typography>
+
+        <Typography>
+          <b>Faculty:</b> {data.sessionReport?.facultyCount}
+        </Typography>
+      </Stack>
+    </Paper>
+
+    {/* ATTENDANCE */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Attendance</Typography>
+
+      {data.attendanceFile ? (
+        <Button
+          variant="outlined"
+          href={`${baseURL}/${data.attendanceFile}`}
+          target="_blank"
+        >
+          Open Attendance File
+        </Button>
+      ) : (
+        <Typography>No attendance uploaded</Typography>
+      )}
+    </Paper>
+
+    {/* PHOTOS */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Photos</Typography>
+
+      {/* <Grid container spacing={2} mt={1}>
+        {data.photos?.map((p, i) => (
+          <Grid key={i} item xs={12} md={4}>
+            <img
+              src={`${baseURL}/${p}`}
+              style={{
+                width: "100%",
+                borderRadius: 8
+              }}
+            />
+          </Grid>
+        ))}
+      </Grid> */}
+
+
+      <Grid container spacing={2} mt={1}>
+{data.photos?.map((p,i)=>(
+<Grid key={i} item xs={12} md={4}>
+<img
+src={`${baseURL}/${p}`}
+style={{
+width:"100%",
+borderRadius:8,
+cursor:"pointer"
+}}
+onClick={()=>setPreviewImage(`${baseURL}/${p}`)}
+/>
+</Grid>
+))}
+</Grid>
+
+    </Paper>
+
+    {/* FEEDBACK */}
+    <Paper sx={{ p: 3, borderRadius: 3, mb: 3 }}>
+      <Typography variant="h6">Feedback</Typography>
+      <Typography mt={1}>{data.feedback}</Typography>
+    </Paper>
+
+    {/* ACTION BUTTONS */}
+    <Stack direction="row" spacing={2} mt={3}>
+      {data.status === "pending" && (
+        <>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleApprove}
+          >
+            Approve
+          </Button>
+
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleReject}
+          >
+            Reject
+          </Button>
+        </>
       )}
 
-      <h3>Session Report</h3>
-      <p>{data.sessionReport?.summary}</p>
-      <p><b>Students:</b> {data.sessionReport?.participantsCount}</p>
-      <p><b>Faculty:</b> {data.sessionReport?.facultyCount}</p>
+      <Button variant="outlined" onClick={() => navigate("/admin/dashboard")}>
+        Back
+      </Button>
+    </Stack>
 
-      <h3>Attendance</h3>
-      {data.attendanceFile ? (
-        <a href={`${baseURL}/${data.attendanceFile}`} target="_blank">Open Attendance File</a>
-      ) : <p>No attendance file uploaded.</p>}
+<Dialog open={Boolean(previewImage)} onClose={()=>setPreviewImage(null)} maxWidth="md">
+<img src={previewImage} style={{width:"100%"}} />
+</Dialog>
+  </Box>
+  
+);
 
-      <h3>Photos</h3>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        {data.photos?.map((p, i) => (
-          <img key={i} src={`${baseURL}/${p}`} style={{ width: 180 }} />
-        ))}
-      </div>
 
-      <h3>Feedback</h3>
-      <p>{data.feedback}</p>
 
-      <div style={{ marginTop: 20 }}>
-        {data.status === "pending" && (
-          <>
-            <button onClick={handleApprove} style={{ marginRight: 8 }}>Approve</button>
-            <button onClick={handleReject} style={{ marginRight: 8 }}>Reject</button>
-          </>
-        )}
-        <button onClick={() => navigate("/admin/dashboard")}>Back</button>
-      </div>
-    </div>
-  );
 }

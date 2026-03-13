@@ -1,83 +1,5 @@
 
 
-//client/src/pages/faculty/PreviewReport.jsx
-
-
-
-// import { useParams, useNavigate } from "react-router-dom";
-// import { Box, Button } from "@mui/material";
-
-// export default function ReportPreview() {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-
-//   const previewUrl = `http://localhost:5002/api/activity/${id}/preview`;
-
-//   return (
-//     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-//       {/* Toolbar */}
-//       <Box
-//         sx={{
-//           p: 1,
-//           display: "flex",
-//           gap: 1,
-//           borderBottom: "1px solid #ddd",
-//           background: "#fafafa"
-//         }}
-//       >
-//         <Button
-//           variant="contained"
-//           onClick={() =>
-//             window.open(
-//               `http://localhost:5002/api/activity/${id}/pdf`,
-//               "_blank"
-//             )
-//           }
-//         >
-//           Download PDF
-//         </Button>
-
-//         <Button
-//           variant="contained"
-//           onClick={() =>
-//             window.open(
-//               `http://localhost:5002/api/activity/${id}/docx`,
-//               "_blank"
-//             )
-//           }
-//         >
-//           Download DOCX
-//         </Button>
-
-//         <Button
-//           variant="outlined"
-//           onClick={() => navigate(`/faculty/report/${id}/edit`)}
-//         >
-//           Edit Report
-//         </Button>
-
-//         <Button variant="outlined" onClick={() => navigate(-1)}>
-//           Back
-//         </Button>
-//       </Box>
-
-//       {/* Preview iframe */}
-//       <iframe
-//         src={previewUrl}
-//         title="Report Preview"
-//         style={{
-//           flex: 1,
-//           border: "none",
-//           width: "100%"
-//         }}
-//       />
-//     </Box>
-//   );
-// }
-
-
-
-
 // client/src/pages/faculty/PreviewReport.jsx
 
 import { useParams, useNavigate } from "react-router-dom";
@@ -117,7 +39,7 @@ export default function PreviewReport() {
     <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       
       {/* Toolbar */}
-      <Box
+      {/* <Box
         sx={{
           p: 1.5,
           display: "flex",
@@ -144,7 +66,7 @@ export default function PreviewReport() {
         <Button variant="outlined" onClick={() => navigate(-1)}>
           Back
         </Button>
-      </Box>
+      </Box> */}
 
       {/* React Preview (NO iframe) */}
       <Box sx={{ flex: 1, overflow: "auto" }}>

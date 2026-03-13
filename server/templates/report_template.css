@@ -396,7 +396,7 @@ body {
 
 /* Summary content cell */
 .summary-content-cell {
-  padding: 0;
+  padding: 12px;
   border-left: 1px solid #000;
   border-right: 1px solid #000;
   border-bottom: 1.5px solid #000;
@@ -404,10 +404,10 @@ body {
 
 /* Actual summary text */
 .summary-content {
-  padding: 15px;
+  padding: 10px;
   text-align: justify;
   line-height: 1.6;
-  white-space: pre-wrap;
+  
 }
 
 /* Allow natural page breaks */
