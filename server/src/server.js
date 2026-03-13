@@ -76,8 +76,14 @@ app.get("/", (req, res) => {
 });
 
 // ---------- Start Server ----------
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on http://localhost:${process.env.PORT}`);
+// app.listen(process.env.PORT, () => {
+//   console.log(`Server running on http://localhost:${process.env.PORT}`);
+// });
+
+const PORT = process.env.PORT || 5002;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 //trail 
