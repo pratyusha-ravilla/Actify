@@ -3,7 +3,8 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5002/api",
+  // baseURL: "http://localhost:5002/api",
+  baseURL: "https://actify-server.onrender.com/api",
 });
 
 axiosClient.interceptors.request.use((config) => {
