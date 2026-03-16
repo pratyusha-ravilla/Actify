@@ -97,6 +97,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-//trail 
-console.log("EMAIL USER:", process.env.EMAIL_USER);
-console.log("EMAIL PASS:", process.env.EMAIL_PASS);
+// //trail 
+// console.log("EMAIL USER:", process.env.EMAIL_USER);
+// console.log("EMAIL PASS:", process.env.EMAIL_PASS);
