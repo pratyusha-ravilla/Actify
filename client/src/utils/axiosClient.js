@@ -24,12 +24,8 @@
 
 import axios from "axios";
 
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "https://actify-server.onrender.com/api";
-
 const axiosClient = axios.create({
-  baseURL: API_URL,
+  baseURL: "https://actify-server.onrender.com/api",
   withCredentials: true,
 });
 
@@ -45,9 +41,3 @@ axiosClient.interceptors.request.use((config) => {
 });
 
 export default axiosClient;
-
-
-
-
-
-
