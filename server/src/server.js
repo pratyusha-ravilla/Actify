@@ -37,27 +37,31 @@ const app = express();
 // }));
 
 
-// app.use(cors({
-//   origin: [
-//     "http://localhost:5173",
-//     "https://actify-client.vercel.app"
-//   ],
-//   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   credentials: true
-// }));
 
 
+
+
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://actifyapp.netlify.app"
+];
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://actifyapp.netlify.app"
-  ],
-  methods: ["GET","POST","PUT","DELETE","PATCH"],
-  allowedHeaders: ["Content-Type","Authorization"],
-  credentials: true
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = "CORS policy does not allow this origin";
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"]
 }));
+
+app.options("*", cors());
 
 
 // ---------- Middleware ----------
@@ -117,3 +121,4 @@ app.listen(PORT, () => {
 // //trail 
 // console.log("EMAIL USER:", process.env.EMAIL_USER);
 // console.log("EMAIL PASS:", process.env.EMAIL_PASS);
+
