@@ -37,13 +37,25 @@ const app = express();
 // }));
 
 
+// app.use(cors({
+//   origin: [
+//     "http://localhost:5173",
+//     "https://actify-client.vercel.app"
+//   ],
+//   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+//   credentials: true
+// }));
+
+
+
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://actify-client.vercel.app"
+    "https://actifyapp.netlify.app"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET","POST","PUT","DELETE","PATCH"],
+  allowedHeaders: ["Content-Type","Authorization"],
   credentials: true
 }));
 
