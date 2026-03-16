@@ -3,7 +3,6 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  // baseURL: "http://localhost:5002/api",
   baseURL: "https://actify-server.onrender.com/api",
 });
 
