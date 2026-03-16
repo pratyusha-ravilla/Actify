@@ -18,7 +18,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./EditReport.css";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5002";
+const API_BASE = import.meta.env.VITE_API_URL || "https://actify-server.onrender.com";
 
 
 export default function EditReport() {
