@@ -24,12 +24,12 @@ export const register = async (req, res) => {
       });
     }
 
-    //  // 🚨 Block creating Admin / HOD / Principal from public registration
-    // if (role === "admin" || role === "hod" || role === "principal") {
-    //   return res.status(403).json({
-    //     message: "You are not allowed to create this account"
-    //   });
-    // }
+     // 🚨 Block creating Admin / HOD / Principal from public registration
+    if (role === "admin" || role === "hod" || role === "principal") {
+      return res.status(403).json({
+        message: "You are not allowed to create this account"
+      });
+    }
 
     const existing = await User.findOne({ email });
     if (existing)
