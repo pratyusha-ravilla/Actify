@@ -4,8 +4,10 @@
 import fs from "fs";
 import path from "path";
 import Activity from "../models/Activity.js";
-import puppeteer from "puppeteer-core";
-import chromium from "chrome-aws-lambda";
+// import puppeteer from "puppeteer-core";
+// import chromium from "chrome-aws-lambda";
+
+import pdf from "html-pdf-node";
 
 import { Document, Packer, Paragraph, ImageRun } from "docx";
 import { fileURLToPath } from "url";
@@ -414,16 +416,25 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
     // });
 
 
-const browser = await puppeteer.launch({
-  args: [
-    ...chromium.args,
-    "--no-sandbox",
-    "--disable-setuid-sandbox"
-  ],
-  executablePath: await chromium.executablePath,
-  headless: true,
-});
+// const browser = await puppeteer.launch({
+//   args: [
+//     ...chromium.args,
+//     "--no-sandbox",
+//     "--disable-setuid-sandbox"
+//   ],
+//   executablePath: await chromium.executablePath,
+//   headless: true,
+// });
 
+
+const file = { content: html };
+
+const options = {
+  format: "A4",
+  printBackground: true,
+};
+
+const pdfBuffer = await pdf.generatePdf(file, options);
 
 
 
