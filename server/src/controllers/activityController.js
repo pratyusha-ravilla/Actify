@@ -4,7 +4,9 @@
 import fs from "fs";
 import path from "path";
 import Activity from "../models/Activity.js";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "chrome-aws-lambda";
+
 import { Document, Packer, Paragraph, ImageRun } from "docx";
 import { fileURLToPath } from "url";
 
@@ -412,16 +414,20 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
     // });
 
 
-
-    const browser = await puppeteer.launch({
-  headless: true,
+const browser = await puppeteer.launch({
   args: [
+    ...chromium.args,
     "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu"
-  ]
+    "--disable-setuid-sandbox"
+  ],
+  executablePath: await chromium.executablePath,
+  headless: true,
 });
+
+
+
+
+
 
     const page = await browser.newPage();
 

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chrome-aws-lambda": "^10.1.0",
     "cors": "^2.8.5",
     "docx": "^8.5.0",
     "dotenv": "^16.0.0",
@@ -18,7 +19,7 @@
     "multer": "^1.4.5-lts.1",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.2",
-    "puppeteer": "^20.9.0"
+    "puppeteer-core": "^24.39.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
