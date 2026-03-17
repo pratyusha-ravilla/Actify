@@ -400,17 +400,28 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
     // ----------------------------
     // Create PDF with Puppeteer
     // ----------------------------
+    // const browser = await puppeteer.launch({
+    //   headless: "new",
+    //   args: [
+    //     "--no-sandbox",
+    //     "--disable-setuid-sandbox",
+    //     "--allow-file-access-from-files",
+    //     "--enable-local-file-access",
+    //     "--disable-web-security"
+    //   ]
+    // });
+
+
+
     const browser = await puppeteer.launch({
-      headless: "new",
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--allow-file-access-from-files",
-        "--enable-local-file-access",
-        "--disable-web-security"
-      ],
-      headless:"new"
-    });
+  headless: true,
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu"
+  ]
+});
 
     const page = await browser.newPage();
 
