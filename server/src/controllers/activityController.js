@@ -8,6 +8,8 @@ import puppeteer from "puppeteer";
 import { Document, Packer, Paragraph, ImageRun } from "docx";
 import { fileURLToPath } from "url";
 
+
+const BASE_URL = "https://actify-server.onrender.com";
 // Fix dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -218,17 +220,36 @@ export const getPdf = async (req, res) => {
     html = html.replace(/{{resourceName}}/g, a.resourcePerson?.name || "");
     html = html.replace(/{{resourceDesignation}}/g, a.resourcePerson?.designation || "");
     html = html.replace(/{{resourceInstitution}}/g, a.resourcePerson?.institution || "");
-    html = html.replace(/{{resourcePhoto}}/g, toDataUrl(a.resourcePerson?.photo));
+    // html = html.replace(/{{resourcePhoto}}/g, toDataUrl(a.resourcePerson?.photo));
 
-    // Session + feedback replacements (legacy fields)
-    // html = html.replace(/{{sessionSummary}}/g, a.sessionReport?.summary || "");
+    html = html.replace(
+  /{{resourcePhoto}}/g,
+  a.resourcePerson?.photo
+    ? `${BASE_URL}/${a.resourcePerson.photo}`
+    : ""
+);
+
+
     html = html.replace(/{{participants}}/g, (a.sessionReport?.participantsCount ?? a.sessionReport?.participants ?? "") + "");
     html = html.replace(/{{facultyCount}}/g, (a.sessionReport?.facultyCount ?? "") + "");
     html = html.replace(/{{feedback}}/g, a.feedback || "");
 
+
+    html = html.replace(
+  /{{invitationImage}}/g,
+  a.invitation ? `${BASE_URL}/${a.invitation}` : ""
+);
+
+html = html.replace(
+  /{{posterImage}}/g,
+  a.poster ? `${BASE_URL}/${a.poster}` : ""
+);
+
+
+    
     // Invitation / poster images
-    html = html.replace(/{{invitationImage}}/g, toDataUrl(a.invitation));
-    html = html.replace(/{{posterImage}}/g, toDataUrl(a.poster));
+    // html = html.replace(/{{invitationImage}}/g, toDataUrl(a.invitation));
+    // html = html.replace(/{{posterImage}}/g, toDataUrl(a.poster));
 
   // ----------------------------
 // PHOTOS PAGE (2 images per page - vertical)
@@ -238,8 +259,18 @@ let photoPagesHtml = "";
 const photosArr = Array.isArray(a.photos) ? a.photos : [];
 
 for (let i = 0; i < photosArr.length; i += 2) {
-  const img1 = toDataUrl(photosArr[i]);
-  const img2 = photosArr[i + 1] ? toDataUrl(photosArr[i + 1]) : "";
+  // const img1 = toDataUrl(photosArr[i]);
+  // const img2 = photosArr[i + 1] ? toDataUrl(photosArr[i + 1]) : "";
+
+
+  const img1 = photosArr[i]
+  ? `${BASE_URL}/${photosArr[i]}`
+  : "";
+
+const img2 = photosArr[i + 1]
+  ? `${BASE_URL}/${photosArr[i + 1]}`
+  : "";
+
 
   photoPagesHtml += `
     <div class="photo-page">
@@ -269,8 +300,15 @@ const attendanceImages = Array.isArray(a.attendanceImages)
   : [];
 
 attendanceImages.forEach((imgPath) => {
-  const imgData = toDataUrl(imgPath);
-  if (!imgData) return;
+  // const imgData = toDataUrl(imgPath);
+  // if (!imgData) return;
+
+  const imgData = imgPath
+  ? `${BASE_URL}/${imgPath}`
+  : "";
+
+if (!imgData) return;
+
 
   attendancePagesHtml += `
     <div class="attendance-page">
@@ -293,8 +331,17 @@ let feedbackPagesHtml = "";
 const feedbackArr = Array.isArray(a.feedbackImages) ? a.feedbackImages : [];
 
 for (let i = 0; i < feedbackArr.length; i += 2) {
-  const img1 = toDataUrl(feedbackArr[i]);
-  const img2 = feedbackArr[i + 1] ? toDataUrl(feedbackArr[i + 1]) : "";
+  // const img1 = toDataUrl(feedbackArr[i]);
+  // const img2 = feedbackArr[i + 1] ? toDataUrl(feedbackArr[i + 1]) : "";
+
+const img1 = feedbackArr[i]
+  ? `${BASE_URL}/${feedbackArr[i]}`
+  : "";
+
+const img2 = feedbackArr[i + 1]
+  ? `${BASE_URL}/${feedbackArr[i + 1]}`
+  : "";
+
 
   feedbackPagesHtml += `
     <div class="feedback-page">
@@ -361,7 +408,8 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
         "--allow-file-access-from-files",
         "--enable-local-file-access",
         "--disable-web-security"
-      ]
+      ],
+      headless:"new"
     });
 
     const page = await browser.newPage();
