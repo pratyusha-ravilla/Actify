@@ -25,7 +25,8 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://actify-server.onrender.com/api",
+  baseURL: "http://localhost:5002/api",
+  
   withCredentials: true,
 });
 

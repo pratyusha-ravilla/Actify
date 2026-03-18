@@ -4,8 +4,7 @@
 import fs from "fs";
 import path from "path";
 import Activity from "../models/Activity.js";
-// import puppeteer from "puppeteer-core";
-// import chromium from "chrome-aws-lambda";
+
 
 import pdf from "html-pdf-node";
 
@@ -13,7 +12,7 @@ import { Document, Packer, Paragraph, ImageRun } from "docx";
 import { fileURLToPath } from "url";
 
 
-const BASE_URL = "https://actify-server.onrender.com";
+// const BASE_URL = "https://actify-server.onrender.com";
 // Fix dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -224,14 +223,9 @@ export const getPdf = async (req, res) => {
     html = html.replace(/{{resourceName}}/g, a.resourcePerson?.name || "");
     html = html.replace(/{{resourceDesignation}}/g, a.resourcePerson?.designation || "");
     html = html.replace(/{{resourceInstitution}}/g, a.resourcePerson?.institution || "");
-    // html = html.replace(/{{resourcePhoto}}/g, toDataUrl(a.resourcePerson?.photo));
+    html = html.replace(/{{resourcePhoto}}/g, toDataUrl(a.resourcePerson?.photo));
 
-    html = html.replace(
-  /{{resourcePhoto}}/g,
-  a.resourcePerson?.photo
-    ? `${BASE_URL}/${a.resourcePerson.photo}`
-    : ""
-);
+ 
 
 
     html = html.replace(/{{participants}}/g, (a.sessionReport?.participantsCount ?? a.sessionReport?.participants ?? "") + "");
@@ -239,21 +233,10 @@ export const getPdf = async (req, res) => {
     html = html.replace(/{{feedback}}/g, a.feedback || "");
 
 
-    html = html.replace(
-  /{{invitationImage}}/g,
-  a.invitation ? `${BASE_URL}/${a.invitation}` : ""
-);
-
-html = html.replace(
-  /{{posterImage}}/g,
-  a.poster ? `${BASE_URL}/${a.poster}` : ""
-);
-
-
-    
+  
     // Invitation / poster images
-    // html = html.replace(/{{invitationImage}}/g, toDataUrl(a.invitation));
-    // html = html.replace(/{{posterImage}}/g, toDataUrl(a.poster));
+    html = html.replace(/{{invitationImage}}/g, toDataUrl(a.invitation));
+    html = html.replace(/{{posterImage}}/g, toDataUrl(a.poster));
 
   // ----------------------------
 // PHOTOS PAGE (2 images per page - vertical)
@@ -263,17 +246,9 @@ let photoPagesHtml = "";
 const photosArr = Array.isArray(a.photos) ? a.photos : [];
 
 for (let i = 0; i < photosArr.length; i += 2) {
-  // const img1 = toDataUrl(photosArr[i]);
-  // const img2 = photosArr[i + 1] ? toDataUrl(photosArr[i + 1]) : "";
+  const img1 = toDataUrl(photosArr[i]);
+  const img2 = photosArr[i + 1] ? toDataUrl(photosArr[i + 1]) : "";
 
-
-  const img1 = photosArr[i]
-  ? `${BASE_URL}/${photosArr[i]}`
-  : "";
-
-const img2 = photosArr[i + 1]
-  ? `${BASE_URL}/${photosArr[i + 1]}`
-  : "";
 
 
   photoPagesHtml += `
@@ -304,14 +279,10 @@ const attendanceImages = Array.isArray(a.attendanceImages)
   : [];
 
 attendanceImages.forEach((imgPath) => {
-  // const imgData = toDataUrl(imgPath);
-  // if (!imgData) return;
+  const imgData = toDataUrl(imgPath);
+  if (!imgData) return;
 
-  const imgData = imgPath
-  ? `${BASE_URL}/${imgPath}`
-  : "";
-
-if (!imgData) return;
+ 
 
 
   attendancePagesHtml += `
@@ -335,16 +306,10 @@ let feedbackPagesHtml = "";
 const feedbackArr = Array.isArray(a.feedbackImages) ? a.feedbackImages : [];
 
 for (let i = 0; i < feedbackArr.length; i += 2) {
-  // const img1 = toDataUrl(feedbackArr[i]);
-  // const img2 = feedbackArr[i + 1] ? toDataUrl(feedbackArr[i + 1]) : "";
+  const img1 = toDataUrl(feedbackArr[i]);
+  const img2 = feedbackArr[i + 1] ? toDataUrl(feedbackArr[i + 1]) : "";
 
-const img1 = feedbackArr[i]
-  ? `${BASE_URL}/${feedbackArr[i]}`
-  : "";
 
-const img2 = feedbackArr[i + 1]
-  ? `${BASE_URL}/${feedbackArr[i + 1]}`
-  : "";
 
 
   feedbackPagesHtml += `
@@ -401,30 +366,10 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
     const summaryText = sr.summary || sr.details || a.sessionReport?.summary || a.summary || a.feedback || "";
     html = html.replace(/{{sessionSummary}}/g, summaryText);
 
-    // ----------------------------
-    // Create PDF with Puppeteer
-    // ----------------------------
-    // const browser = await puppeteer.launch({
-    //   headless: "new",
-    //   args: [
-    //     "--no-sandbox",
-    //     "--disable-setuid-sandbox",
-    //     "--allow-file-access-from-files",
-    //     "--enable-local-file-access",
-    //     "--disable-web-security"
-    //   ]
-    // });
+   
 
 
-// const browser = await puppeteer.launch({
-//   args: [
-//     ...chromium.args,
-//     "--no-sandbox",
-//     "--disable-setuid-sandbox"
-//   ],
-//   executablePath: await chromium.executablePath,
-//   headless: true,
-// });
+
 
 
 const file = { content: html };
@@ -436,40 +381,15 @@ const options = {
 
 const pdfBuffer = await pdf.generatePdf(file, options);
 
+res.setHeader(
+  "Content-Disposition",
+  `attachment; filename="${(a.activityName || "report").replace(/[^a-z0-9_\-\.]/gi, "_")}.pdf"`
+);
+res.setHeader("Content-Type", "application/pdf");
+
+res.send(pdfBuffer);
 
 
-
-
-    const page = await browser.newPage();
-
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    await page.addStyleTag({ path: CSS_PATH });
-
-
-
-const pdf = await page.pdf({
-  format: "A4",
-  printBackground: true,
-
-displayHeaderFooter: true,
-
-headerTemplate: `
-  <div style="width:100%; text-align:center; margin-top:10px;">
-    <img src="${toBase64(HEADER_PATH)}" style="width:90%; height:auto;" />
-  </div>
-`,
-
-footerTemplate: `<div></div>`,  // EMPTY FOOTER
-
-
-
-  margin: {
-    top: "135px",
-    bottom: "100px",
-    left: "50px",
-    right: "50px"
-  }
-});
 
 
     await browser.close();
