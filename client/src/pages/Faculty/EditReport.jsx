@@ -1,6 +1,4 @@
 
-
-
 // client/src/pages/Faculty/EditReport.jsx
 import React, { useEffect, useState, useContext } from "react";
 import {
@@ -18,7 +16,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./EditReport.css";
 
-const API_BASE = import.meta.env.VITE_API_URL || "https://actify-server.onrender.com";
+
 
 
 export default function EditReport() {
@@ -52,7 +50,6 @@ export default function EditReport() {
     sessionSummary: "",
     participantsCount: "",
     facultyCount: "",
-
     feedback: "",
   });
 
@@ -95,8 +92,7 @@ const [previewImage, setPreviewImage] = useState(null);
         const res = await axiosClient.get(`/activity/${id}`);
         const d = res.data;
         const sr = d.sessionReport || {};
-        const base = axiosClient.defaults.baseURL.replace("/api", "");
-
+      
         setForm({
           reportType: d.reportType,
           academicYear: d.academicYear,
@@ -119,58 +115,57 @@ const [previewImage, setPreviewImage] = useState(null);
           sessionSummary: sr.summary || "",
           participantsCount: sr.participantsCount || "",
           facultyCount: sr.facultyCount || "",
-
           feedback: d.feedback || "",
         });
 
        
-  const baseURL = axiosClient.defaults.baseURL.replace("/api", "");
+const baseURL = axiosClient.defaults.baseURL
+  .replace("/api", "")
+  .replace(/\/$/, "");
 
 setExisting({
   invitation: d.invitation
-    ? `${API_BASE}/${d.invitation}`
+    ? `${baseURL}/${d.invitation}`
     : null,
 
   poster: d.poster
-    ? `${API_BASE}/${d.poster}`
+    ? `${baseURL}/${d.poster}`
     : null,
 
   resourcePhoto: d.resourcePerson?.photo
-    ? `${API_BASE}/${d.resourcePerson.photo}`
+    ? `${baseURL}/${d.resourcePerson.photo}`
     : null,
 
   attendanceImages: (d.attendanceImages || []).map(
-    img => `${API_BASE}/${img}`
+    img => `${baseURL}/${img}`
   ),
 
   photos: (d.photos || []).map(
-    img => `${API_BASE}/${img}`
+    img => `${baseURL}/${img}`
   ),
 
   feedbackImages: (d.feedbackImages || []).map(
-    img => `${API_BASE}/${img}`
-  ),
-});
+    img => `${baseURL}/${img}`
+  )
+}
+
+);
 
 
 console.log("EDIT IMAGES CHECK:", {
   attendance: d.attendanceImages,
-  resolved: (d.attendanceImages || []).map(img => `${API_BASE}/${img}`)
+  resolved: (d.attendanceImages || []).map(img => `${baseURL}/${img}`)
 });
-
+console.log("FEEDBACK RAW:", d.feedbackImages);
         
-      } catch {
-        alert("Failed to load report");
-      } finally {
+      } catch (err) {
+  console.log("LOAD ERROR:", err);
+}finally {
         setLoading(false);
       }
     };
     load();
   }, [id]);
-
-const base = axiosClient.defaults.baseURL
-  .replace("/api", "")
-  .replace(/\/$/, "");
 
 
 
@@ -419,7 +414,7 @@ const base = axiosClient.defaults.baseURL
       <input
         type="file"
         name="resourcePhoto"
-        onChange={(e) => previewFile(e, "resourcePhoto")}
+       onChange={(e) => previewSingle(e, "resourcePhoto")}
       />
 
       {previews.resourcePhoto ? (

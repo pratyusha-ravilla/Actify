@@ -4,15 +4,12 @@
 import fs from "fs";
 import path from "path";
 import Activity from "../models/Activity.js";
-
-
-import pdf from "html-pdf-node";
+import puppeteer from "puppeteer";
 
 import { Document, Packer, Paragraph, ImageRun } from "docx";
 import { fileURLToPath } from "url";
 
 
-// const BASE_URL = "https://actify-server.onrender.com";
 // Fix dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,8 +42,6 @@ function toBase64(filePath) {
     return "";
   }
 }
-
-
 
 
 function toDataUrl(relativePath) {
@@ -163,6 +158,15 @@ export const updateActivity = async (req, res) => {
 
     if (req.files?.photos) payload.photos = req.files.photos.map(f => "uploads/" + f.filename);
 
+
+if (req.files?.feedbackImages) {
+  const newImages = req.files.feedbackImages.map(
+    f => "uploads/" + f.filename
+  );
+
+  payload.feedbackImages = newImages;
+}
+
     const updated = await Activity.findByIdAndUpdate(req.params.id, payload, { new: true });
     res.json(updated);
 
@@ -170,7 +174,10 @@ export const updateActivity = async (req, res) => {
     console.log("UPDATE ERROR:", err);
     res.status(500).json({ message: "Update failed", error: err.message });
   }
+  console.log("FILES RECEIVED:", Object.keys(req.files || {}));
+console.log("FEEDBACK FILES:", req.files?.feedbackImages);
 };
+
 
 // ============================
 // GENERATE PDF
@@ -225,9 +232,6 @@ export const getPdf = async (req, res) => {
     html = html.replace(/{{resourceInstitution}}/g, a.resourcePerson?.institution || "");
     html = html.replace(/{{resourcePhoto}}/g, toDataUrl(a.resourcePerson?.photo));
 
- 
-
-
     html = html.replace(/{{participants}}/g, (a.sessionReport?.participantsCount ?? a.sessionReport?.participants ?? "") + "");
     html = html.replace(/{{facultyCount}}/g, (a.sessionReport?.facultyCount ?? "") + "");
     html = html.replace(/{{feedback}}/g, a.feedback || "");
@@ -235,6 +239,7 @@ export const getPdf = async (req, res) => {
 
   
     // Invitation / poster images
+    
     html = html.replace(/{{invitationImage}}/g, toDataUrl(a.invitation));
     html = html.replace(/{{posterImage}}/g, toDataUrl(a.poster));
 
@@ -248,7 +253,6 @@ const photosArr = Array.isArray(a.photos) ? a.photos : [];
 for (let i = 0; i < photosArr.length; i += 2) {
   const img1 = toDataUrl(photosArr[i]);
   const img2 = photosArr[i + 1] ? toDataUrl(photosArr[i + 1]) : "";
-
 
 
   photoPagesHtml += `
@@ -282,9 +286,6 @@ attendanceImages.forEach((imgPath) => {
   const imgData = toDataUrl(imgPath);
   if (!imgData) return;
 
- 
-
-
   attendancePagesHtml += `
     <div class="attendance-page">
       <div class="attendance-box">
@@ -309,9 +310,6 @@ for (let i = 0; i < feedbackArr.length; i += 2) {
   const img1 = toDataUrl(feedbackArr[i]);
   const img2 = feedbackArr[i + 1] ? toDataUrl(feedbackArr[i + 1]) : "";
 
-
-
-
   feedbackPagesHtml += `
     <div class="feedback-page">
       <div class="feedback-box">
@@ -329,9 +327,7 @@ for (let i = 0; i < feedbackArr.length; i += 2) {
 
 html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
 
-
-
-    // ----------------------------
+  // ----------------------------
     // NEW: Session report specific placeholders (from sessionReport object)
     // ----------------------------
     const sr = a.sessionReport || {};
@@ -366,37 +362,68 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
     const summaryText = sr.summary || sr.details || a.sessionReport?.summary || a.summary || a.feedback || "";
     html = html.replace(/{{sessionSummary}}/g, summaryText);
 
+    // ----------------------------
+    // Create PDF with Puppeteer
+    // ----------------------------
    
+ const browser = await puppeteer.launch({
+  headless: "new",
+  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+  ],
+});
 
 
 
+const page = await browser.newPage();
+
+// ✅ Load HTML
+await page.setContent(html, {
+  waitUntil: "domcontentloaded",
+});
+
+// ✅ Apply CSS
+await page.addStyleTag({ path: CSS_PATH });
 
 
-const file = { content: html };
-
-const options = {
+// ✅ Generate PDF
+const pdf = await page.pdf({
   format: "A4",
   printBackground: true,
-};
 
-const pdfBuffer = await pdf.generatePdf(file, options);
+  displayHeaderFooter: true,
 
+  headerTemplate: `
+    <div style="width:100%; text-align:center; margin-top:10px;">
+      <img src="${toBase64(HEADER_PATH)}" style="width:90%; height:auto;" />
+    </div>
+  `,
+
+  footerTemplate: `<div></div>`,
+
+  margin: {
+    top: "135px",
+    bottom: "100px",
+    left: "50px",
+    right: "50px"
+  }
+});
+
+
+    await browser.close();
+
+   // ✅ Send response
 res.setHeader(
   "Content-Disposition",
   `attachment; filename="${(a.activityName || "report").replace(/[^a-z0-9_\-\.]/gi, "_")}.pdf"`
 );
 res.setHeader("Content-Type", "application/pdf");
 
-res.send(pdfBuffer);
-
-
-
-
-    await browser.close();
-
-    res.setHeader("Content-Disposition", `attachment; filename="${(a.activityName || 'report').replace(/[^a-z0-9_\-\.]/gi,'_')}.pdf"`);
-    res.setHeader("Content-Type", "application/pdf");
-    res.send(pdf);
+res.send(pdf);
 
   } catch (err) {
     console.log("PDF ERROR:", err);
@@ -406,9 +433,7 @@ res.send(pdfBuffer);
 
 
 
-// ============================
-// GENERATE DOCX
-// ============================
+//docx approach
 export const getDocx = async (req, res) => {
   try {
     const a = await Activity.findById(req.params.id).lean();

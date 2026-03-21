@@ -23,10 +23,20 @@ if (!fs.existsSync(uploadsDir)) {
 // Multer Storage Engine
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
+  // filename: (req, file, cb) => {
+  //   const clean = file.originalname.replace(/\s+/g, "_");
+  //   cb(null, Date.now() + "-" + clean);
+  // }
+
+
   filename: (req, file, cb) => {
-    const clean = file.originalname.replace(/\s+/g, "_");
-    cb(null, Date.now() + "-" + clean);
-  }
+  const cleanName = file.originalname
+    .normalize("NFKD")              // fix unicode
+    .replace(/[^\w.-]/g, "_")       // remove special chars
+    .replace(/\s+/g, "_");          // remove spaces
+
+  cb(null, Date.now() + "-" + cleanName);
+}
 });
 
 const upload = multer({ storage });
