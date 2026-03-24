@@ -19,8 +19,8 @@ export default function Register() {
   const submit = async (e) => {
     e.preventDefault();
     // ✅ STEP 2 — Email Validation (Add Here)
-    if (!form.email.endsWith("@atria.edu")) {
-      alert("Only Atria college emails are allowed (xxxx@atria.edu)");
+    if (!form.email.endsWith("@atria.edu.in")) {
+      alert("Only Atria college emails are allowed (xxxx@atria.edu.in)");
       return;
     }
     try {

@@ -9,6 +9,9 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
+//contact
+import ContactPage from "./pages/ContactPage";
+
 
 // Faculty
 import FacultyDashboard from "./pages/Faculty/FacultyDashboard";
@@ -50,6 +53,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* new add-on*/}
+        <Route path="/contact" element={<ContactPage />} />
 
         <Route path="/department/:code" element={<DepartmentReports />} />
       

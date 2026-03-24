@@ -227,178 +227,7 @@ return (
   return (
         <Grid key={ev._id} item xs={12} md={6} lg={4}>
           
-          {/* <Paper
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              border: "1px solid #ede9fe",
-              transition: "all 0.3s",
-              "&:hover": {
-                transform: "translateY(-6px)",
-                boxShadow: "0 15px 35px rgba(124,58,237,0.2)"
-              }
-            }}
-          >
-
-          
-            <Box>
-              <Typography
-                sx={{
-                  fontWeight: 800,
-                  fontSize: 18,
-                  color: "#4c1d95"
-                }}
-              >
-                {ev.title}
-              </Typography>
-
-              <Typography
-                sx={{
-                  mt: 1,
-                  color: "#6b7280",
-                  fontSize: 14
-                }}
-              >
-                {ev.description || "No description provided"}
-              </Typography>
-
-              <Stack direction="row" spacing={1} flexWrap="wrap" mt={2}>
-                <Chip
-                  icon={<CategoryIcon />}
-                  label={ev.eventType}
-                  size="small"
-                  sx={{
-                    background: "#ede9fe",
-                    color: "#6d28d9",
-                    fontWeight: 600
-                  }}
-                />
-
-                <Chip
-                  icon={<BusinessIcon />}
-                  label={ev.department}
-                  size="small"
-                  variant="outlined"
-                />
-
-                <Chip
-                  icon={<EventAvailableIcon />}
-                  label={`${new Date(ev.startDate).toDateString()}`}
-                  size="small"
-                  color="primary"
-                />
-
-
-               
-<Typography
-  sx={{
-    mt: 1,
-    fontSize: 13,
-    fontWeight: 600,
-    color: "#7c3aed"
-  }}
->
-  ⏳ {getCountdown(ev.startDate)}
-</Typography>
-              </Stack>
-
-
-
-
-{isRegistered && (
-  <Chip
-    label="✔ Registered"
-    size="small"
-    sx={{
-      mt: 1,
-      background: "#dcfce7",
-      color: "#166534",
-      fontWeight: 600
-    }}
-  />
-)}
-            </Box>
-
-
-            
-            <Stack direction="row" spacing={2} mt={3}>
-
-
-<Button
-  startIcon={<HowToRegIcon />}
-  disabled={
-    ev.approvalStatus !== "approved" ||
-    registeringId === ev._id ||
-    isRegistered
-  }
-  onClick={() => register(ev._id)}
-  sx={{
-    textTransform: "none",
-    fontWeight: 700,
-    borderRadius: "24px",
-    px: 3,
-    color: "#fff",
-
-  
-    background:
-      isRegistered
-        ? "#16a34a"
-        : ev.approvalStatus !== "approved"
-        ? "#f59e0b"
-        : "linear-gradient(135deg,#7c3aed,#5b21b6)",
-
-    boxShadow:
-      isRegistered
-        ? "0 6px 18px rgba(22,163,74,0.4)"
-        : ev.approvalStatus !== "approved"
-        ? "0 6px 18px rgba(245,158,11,0.4)"
-        : "0 8px 20px rgba(124,58,237,0.35)",
-
-    "&:hover": {
-      background:
-        isRegistered
-          ? "#15803d"
-          : ev.approvalStatus !== "approved"
-          ? "#d97706"
-          : "linear-gradient(135deg,#6d28d9,#4c1d95)"
-    },
-
-    "&.Mui-disabled": {
-      opacity: 1,
-      color: "#fff"
-    }
-  }}
->
-  {isRegistered
-    ? "Registered"
-    : ev.approvalStatus !== "approved"
-    ? "Awaiting Approval"
-    : "Register"}
-</Button>
-
-              {user &&
-                ev.createdBy &&
-                String(user.id) === String(ev.createdBy._id) && (
-                  <Button
-                    color="error"
-                    variant="outlined"
-                    startIcon={<DeleteOutlineIcon />}
-                    onClick={() => deleteEvent(ev._id)}
-                    disabled={deletingId === ev._id}
-                  >
-                    {deletingId === ev._id ? "Deleting..." : "Delete"}
-                  </Button>
-                )}
-
-            </Stack>
-
-          </Paper> */}
-
-
+      
 <Paper
   sx={{
     p: 3,
@@ -490,7 +319,14 @@ return (
   </Box>
 
   {/* ===== ACTION BUTTON ===== */}
-  <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+  <Box sx={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 2, // spacing between buttons
+    mt: 2,
+    flexWrap: "wrap"
+  }}>
 
 <Button
   startIcon={<HowToRegIcon />}
@@ -543,7 +379,55 @@ return (
     : "Register"}
 </Button>
 
+
+
+{user &&
+  ev.createdBy &&
+  String(user.id) === String(ev.createdBy._id) && (
+    <Button
+      startIcon={<DeleteOutlineIcon />}
+      onClick={() => deleteEvent(ev._id)}
+      disabled={deletingId === ev._id}
+      sx={{
+        textTransform: "none",
+        fontWeight: 700,
+        borderRadius: "24px",
+        px: 3,
+        color: "#fff",
+
+        background:
+          deletingId === ev._id
+            ? "#dc2626"
+            : "linear-gradient(135deg,#ef4444,#b91c1c)",
+
+        boxShadow:
+          deletingId === ev._id
+            ? "0 6px 18px rgba(220,38,38,0.4)"
+            : "0 8px 20px rgba(239,68,68,0.35)",
+
+        transition: "all 0.3s ease",
+
+        "&:hover": {
+          background: "linear-gradient(135deg,#dc2626,#991b1b)",
+          transform: "scale(1.05)"
+        },
+
+        "&:active": {
+          transform: "scale(0.97)"
+        },
+
+        "&.Mui-disabled": {
+          opacity: 1,
+          color: "#fff",
+          background: "#ef4444"
+        }
+      }}
+    >
+      {deletingId === ev._id ? "Deleting..." : "Delete"}
+    </Button>
+)}
   </Box>
+  
 
 </Paper>
 

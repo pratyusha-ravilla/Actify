@@ -239,3 +239,60 @@ section {
   transform: translateY(-8px);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
 }
+
+
+
+/* ================= CONTACT FORM ================= */
+
+.contact-container {
+  margin-top: 50px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.15);
+}
+
+.contact-container h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #4c1d95;
+}
+
+.contact-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-container input,
+.contact-container textarea {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.contact-container input:focus,
+.contact-container textarea:focus {
+  outline: none;
+  border: 1px solid #7c3aed;
+}
+
+.contact-btn {
+  padding: 12px;
+  border-radius: 24px;
+  border: none;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.contact-btn:hover {
+  background: linear-gradient(135deg, #6d28d9, #4c1d95);
+  transform: scale(1.05);
+}

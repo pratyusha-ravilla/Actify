@@ -57,6 +57,8 @@ import homeContentRoutes from "./routes/homeContentRoutes.js";
 import statsRoutes from "./routes/statsRoutes.js";
 import departmentRoutes from "./routes/departmentRoutes.js";
 
+//contact
+import contactRoutes from "./routes/contactRoutes.js";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/activity", activityRoutes);
@@ -72,6 +74,11 @@ app.use("/api/events", eventRoutes);
 app.use("/api/home-content", homeContentRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/departments", departmentRoutes);
+
+//contact
+app.use("/api/contact", contactRoutes);
+
+
 
 app.use("/api/admin", adminRoutes);
 

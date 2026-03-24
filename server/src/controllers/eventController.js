@@ -88,32 +88,6 @@ export const createEvent = async (req, res) => {
  * Faculty registers for an event
  */
 
-// export const registerForEvent = async (req, res) => {
-//   try {
-//     const event = await Event.findById(req.params.id);
-//     if (!event) {
-//       return res.status(404).json({ message: "Event not found" });
-//     }
-
-//     const alreadyRegistered = event.registrations.some(
-//       (r) => r.faculty.toString() === req.user._id.toString(),
-//     );
-
-//     if (alreadyRegistered) {
-//       return res.status(400).json({ message: "Already registered" });
-//     }
-
-//     event.registrations.push({
-//       faculty: req.user._id,
-//     });
-
-//     await event.save();
-
-//     res.json({ message: "Registered successfully" });
-//   } catch (err) {
-//     res.status(500).json({ message: "Registration failed" });
-//   }
-// };
 
 export const registerForEvent = async (req, res) => {
   try {
@@ -188,16 +162,7 @@ await sendEmail(
   "Actify: Event Registration Confirmed",
   html
 );
-    
-
-
-await sendEmail(
-  req.user.email,
-  "Actify: Event Registration Confirmed",
-  html
-);
-
-
+  
     res.json({ message: "Registered successfully" });
 
   } catch (err) {
@@ -225,6 +190,7 @@ export const myRegistrations = async (req, res) => {
 
 //delete event
 
+
 export const deleteEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -233,23 +199,20 @@ export const deleteEvent = async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    // 🔒 OWNER CHECK
-    if (event.createdBy.toString() !== req.user._id.toString()) {
+    // ✅ Check ownership
+    if (String(event.createdBy) !== String(req.user._id)) {
       return res.status(403).json({
-        message: "You are not authorized to delete this event",
+        message: "You are not allowed to delete this event",
       });
     }
 
     await event.deleteOne();
 
     res.json({ message: "Event deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to delete event" });
+  } catch (err) {
+    console.log("DELETE EVENT ERROR:", err);
+    res.status(500).json({ message: "Delete failed" });
   }
-  // in getOpenEvents controller
-  const events = await Event.find({ status: "open" })
-    .populate("createdBy", "name email")
-    .sort({ startDate: 1 });
 };
 
 export const approveEvent = async (req, res) => {

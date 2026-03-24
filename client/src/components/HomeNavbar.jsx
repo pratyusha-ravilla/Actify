@@ -44,7 +44,7 @@ export default function HomeNavbar() {
         <li><a href="#home">Home</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#roles">Roles</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><Link to="/contact">Contact</Link></li>
         <li><Link to="/register">Register</Link></li>
         <li><Link to="/login">Login</Link></li>
       </ul>

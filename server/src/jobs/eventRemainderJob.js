@@ -1,3 +1,7 @@
+
+
+//server/src/jobs/eventRemainderJob.js
+
 import cron from "node-cron";
 import Event from "../models/Event.js";
 import { sendEmail } from "../utils/emailService.js";
