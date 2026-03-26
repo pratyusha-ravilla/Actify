@@ -160,47 +160,60 @@ body {
 
 /* ------------------- PAGE 2 : TABLE OF CONTENTS ------------------- */
 
+
 .toc-heading {
   text-align: center;
-  font-size: 22pt;
-  color: #6e28a0ff;
+  font-size: 24pt;
+  color: #6f2f9d;
   font-weight: bold;
-  margin-top: 20px;
+  margin-top: 30px;
   text-decoration: underline;
+  letter-spacing: 1px;
 }
 
+/* TABLE */
 .toc-table {
-  width: 90%;
-  margin: 20px auto;
+  width: 85%;
+  margin: 40px auto;
   border-collapse: collapse;
-  font-size: 14pt;
+  font-size: 15pt;
 }
 
+/* HEADER */
 .toc-table th {
-  background: #6f2f9dff;
-  color: white;
-  padding: 10px;
-  border: 1px solid #000;
-}
-
-.toc-table td {
-  padding: 10px;
-  border: 1px solid #000;
-  font-weight: bold;
-}
-
-.toc-row td {
-  background: #e7c4c4;
-}
-
-.slno {
-  width: 80px;
+  background: #6f2f9d;
+  color: #fff;
+  padding: 14px;
+  border: 1px solid #444;
   text-align: center;
 }
 
+/* BODY */
+.toc-table td {
+  padding: 18px;
+  border: 1px solid #444;
+}
+
+/* ROW BACKGROUND */
+.toc-row td {
+  background: #d7c0c0;
+}
+
+/* SERIAL NUMBER */
+.slno {
+  width: 100px;
+  text-align: center;
+  font-weight: bold;
+  color: #6f2f9d;
+}
+
+/* CONTENT TEXT */
 .section-name {
+  font-weight: bold;
+  color: #6f2f9d;
   text-transform: uppercase;
 }
+
 
 /* ====================== INVITATION PAGE STYLING ====================== */
 
