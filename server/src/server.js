@@ -24,12 +24,24 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// ---------- FIXED CORS CONFIGURATION (
-//ALLOW CLIENT 5173) ----------
+// ---------- CORS ----------
+// Comma-separated allowlist, e.g. CORS_ORIGINS=https://actify.duckdns.org
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
 
+// Behind Nginx: trust one proxy hop so req.ip / rate limits see the real client.
+app.set("trust proxy", 1);
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: (origin, callback) => {
+    // No Origin header: same-origin, curl, or server-to-server.
+    if (!origin) return callback(null, true);
+    return allowedOrigins.includes(origin)
+      ? callback(null, true)
+      : callback(new Error(`Origin not allowed by CORS: ${origin}`));
+  },
   
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],

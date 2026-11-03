@@ -380,10 +380,15 @@ html = html.replace(/{{feedbackPages}}/g, feedbackPagesHtml);
     // Create PDF with Puppeteer
     // ----------------------------
    
- const browser = await puppeteer.launch({
-  headless: "new",
-  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-  args: [
+  const browser = await puppeteer.launch({
+   headless: "new",
+   // Set PUPPETEER_EXECUTABLE_PATH on Linux (e.g. /usr/bin/google-chrome-stable).
+   // Unset -> use the Chrome that Puppeteer downloaded at install time.
+   ...(process.env.PUPPETEER_EXECUTABLE_PATH
+     ? { executablePath: process.env.PUPPETEER_EXECUTABLE_PATH }
+     : {}),
+   timeout: 60000,
+   args: [
     "--no-sandbox",
     "--disable-setuid-sandbox",
     "--disable-dev-shm-usage",

@@ -4,8 +4,12 @@
 
 import axios from "axios";
 
+// Set VITE_API_BASE_URL at build time (e.g. "/api" when the SPA and API share
+// a host behind Nginx). Falls back to localhost for `npm run dev`.
+const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5002/api";
+
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5002/api",
+  baseURL,
   
   withCredentials: true,
 });

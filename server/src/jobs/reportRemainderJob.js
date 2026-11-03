@@ -1,9 +1,11 @@
 import cron from "node-cron";
 import Event from "../models/Event.js";
-import activity from "../models/Activity.js";
+import Activity from "../models/Activity.js";
 import { sendEmail } from "../utils/emailService.js";
 
 cron.schedule("0 10 * * *", async () => {
+
+ try {
 
   console.log("Running report reminder job...");
 
@@ -19,7 +21,10 @@ cron.schedule("0 10 * * *", async () => {
 
       const faculty = reg.faculty;
 
-      const activity = await Report.findOne({
+      // Guard against unpopulated/deleted users.
+      if (!faculty?._id) continue;
+
+      const activity = await Activity.findOne({
         faculty: faculty._id,
         event: event._id
       });
@@ -62,4 +67,8 @@ Actify System
     }
   }
 
+ } catch (err) {
+   // Never let a mail/DB failure become an unhandled rejection (Node exits on those).
+   console.error("Report reminder job failed:", err);
+ }
 });
